@@ -1,13 +1,20 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navbar from './components/Navbar';
 import Home from './components/Home';
+import UploadProperty from './components/UploadProperty';
 import './styles.css';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <Home />
-    </div>
+    <Router>
+      <Navbar /> {/* Navbar is only added once here */}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/upload-property" element={<UploadProperty />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

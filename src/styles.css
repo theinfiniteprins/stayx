@@ -1,92 +1,170 @@
 /* General styles */
 body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-  }
-  
-  /* Navbar styles */
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #008080; /* Theme color */
-    padding: 5px 20px;
-    color: white;
-    position: relative;
-  }
-  
-  .navbar-left {
-    display: flex;
-    align-items: center;
-  }
-  
-  .navbar-logo {
-    width: 60px;
-    height: 60px;
-    border-radius: 15px;
-    border: 2px solid white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Centering the title in the navbar */
-  .navbar-center {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-  }
-  
-  .navbar-title {
-    font-size: 24px;
-    margin: 0;
-    color: white;
-  }
-  
-  .navbar-right {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
-  
-  /* Upload Property box styles */
-  .upload-box {
-    display: flex;
-    align-items: center;
-    background-color: white;
-    color: black;
-    padding: 3px 10px;
-    margin-right: 15px;
-    border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .upload-plus {
-    font-size: 25px;
-    color: green;
-    margin-right: 8px;
-  }
-  
-  .upload-text {
-    font-size: 14px;
-    font-weight: bold;
-  }
-  
-  /* Menu icon container with a circle around the icon */
-  .menu-icon-container {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid white;
-    border-radius: 50%;
-  }
-  
-  .menu-icon {
-    font-size: 24px;
-    cursor: pointer;
-    color: white;
-    font-style: normal;
-  }
-  
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Navbar styles */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #008080; /* Theme color */
+  padding: 5px 20px;
+  color: white;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 15px; /* Slightly rounded edges */
+  border: 2px solid white; /* Contrasting border */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow to highlight the logo */
+  cursor: pointer;
+}
+
+.navbar-center {
+  text-align: center;
+}
+
+.navbar-title {
+  font-size: 24px;
+  margin: 0;
+  color: white;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.upload-box {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  margin-right: 10px;
+  cursor: pointer;
+  text-decoration: none; /* Remove underline */
+  color: black;
+}
+
+.upload-plus {
+  font-size: 18px;
+  margin-right: 5px;
+}
+
+.upload-text {
+  font-size: 16px;
+}
+
+.menu-icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.menu-icon {
+  font-size: 24px;
+  color: white;
+  font-style: normal; /* Avoid italic by default */
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 10px;
+  top: 60px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  z-index: 100;
+}
+
+.dropdown-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Dropdown menu item styles */
+.dropdown-menu li {
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: black; /* Set font color to black */
+}
+
+.dropdown-menu li i {
+  margin-right: 8px;
+  font-style: normal;
+}
+
+/* Upload Property form styles */
+.upload-property-container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.upload-property-container h2 {
+  text-align: center;
+  color: #008080; /* Theme color */
+}
+
+.upload-property-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-group textarea {
+  height: 100px;
+  resize: none;
+}
+
+.submit-button {
+  background-color: #008080;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #006666;
+}
