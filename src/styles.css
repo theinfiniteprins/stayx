@@ -168,3 +168,36 @@ body {
 .submit-button:hover {
   background-color: #006666;
 }
+
+
+/* Home page styles */
+.home-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.home-title {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #008080; /* Theme color */
+}
+
+.slider-container {
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  border-radius: 15px; /* Rounded corners for the slider container */
+  overflow: hidden; /* Ensure content doesn't overflow outside the container */
+}
+
+.slider-item {
+  position: relative;
+  height: 300px; /* Fixed height for the slider */
+}
+
+.slider-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure images cover the container while maintaining aspect ratio */
+  border-radius: 15px; /* Rounded corners for the images */
+}
