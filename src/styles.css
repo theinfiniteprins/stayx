@@ -1,0 +1,92 @@
+/* General styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Navbar styles */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #008080; /* Theme color */
+    padding: 5px 20px;
+    color: white;
+    position: relative;
+  }
+  
+  .navbar-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    border: 2px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Centering the title in the navbar */
+  .navbar-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+  }
+  
+  .navbar-title {
+    font-size: 24px;
+    margin: 0;
+    color: white;
+  }
+  
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  
+  /* Upload Property box styles */
+  .upload-box {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    color: black;
+    padding: 3px 10px;
+    margin-right: 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .upload-plus {
+    font-size: 25px;
+    color: green;
+    margin-right: 8px;
+  }
+  
+  .upload-text {
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  /* Menu icon container with a circle around the icon */
+  .menu-icon-container {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid white;
+    border-radius: 50%;
+  }
+  
+  .menu-icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+    font-style: normal;
+  }
+  
