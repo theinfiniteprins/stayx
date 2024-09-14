@@ -45,7 +45,7 @@ const Navbar = () => {
       <div className="navbar-right">
         {/* Upload Property button with link */}
         <Link to="/upload-property" className="upload-box">
-          <span className="upload-plus">+</span>
+          <span className="upload-plus">➕</span>
           <span className="upload-text">Upload Property</span>
         </Link>
 
@@ -61,7 +61,7 @@ const Navbar = () => {
               <li><i className="menu-item-icon">👤</i> Profile</li>
               <li><i className="menu-item-icon">🏠</i> My Property</li>
               <li><i className="menu-item-icon">➕</i> Upload Property</li>
-              <li><i className="menu-item-icon">🚪</i> Sign Out</li>
+              <li><i class="fa fa-sign-out" aria-hidden="true"></i> Sign Out</li>
             </ul>
           </div>
         )}

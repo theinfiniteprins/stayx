@@ -169,17 +169,10 @@ body {
   background-color: #006666;
 }
 
-
 /* Home page styles */
 .home-container {
   text-align: center;
   padding: 20px;
-}
-
-.home-title {
-  font-size: 28px;
-  margin-bottom: 20px;
-  color: #008080; /* Theme color */
 }
 
 .slider-container {
@@ -200,4 +193,86 @@ body {
   height: 100%;
   object-fit: cover; /* Ensure images cover the container while maintaining aspect ratio */
   border-radius: 15px; /* Rounded corners for the images */
+}
+
+/* Left and right arrow styles */
+.custom-arrow-left, .custom-arrow-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none; /* Remove background */
+  color: #008080; /* Theme color for arrows */
+  font-size: 60px; /* Double the previous arrow size */
+  border: none; /* Remove borders */
+  cursor: pointer;
+  z-index: 1;
+}
+
+.custom-arrow-left {
+  left: 10px; /* Adjust as needed */
+}
+
+.custom-arrow-right {
+  right: 10px; /* Adjust as needed */
+}
+
+.custom-arrow-left:hover, .custom-arrow-right:hover {
+  color: #005959; /* Darker teal for hover effect */
+}
+
+.custom-arrow-left i, .custom-arrow-right i {
+  font-size: 100px; /* Double the previous icon size */
+  font-style: normal; /* Remove italic style */
+}
+
+/* Property details container styles */
+.property-details {
+  position: absolute; /* Position it at the bottom of the slider item */
+  bottom: 10px; /* Adjust as needed */
+  left: 10px; /* Adjust as needed */
+  width: 175px; /* Fixed width */
+  background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent background */
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.property-details h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #008080; /* Theme color */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add ellipsis for overflowing text */
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
+}
+
+.property-details p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add ellipsis for overflowing text */
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
+}
+
+.view-property-button {
+  display: inline-flex;
+  align-items: center;
+  background-color: #ffffff;
+  color: black;
+  padding: 5px 10px;
+  border-radius: 4px;
+  text-decoration: none; /* Remove underline */
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.view-property-button i {
+  margin-right: 5px;
+  font-size: 16px;
+  font-style: normal; /* Remove italic style */
+}
+
+.view-property-button:hover {
+  background-color: #f0f0f0;
 }
