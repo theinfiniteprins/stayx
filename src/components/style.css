@@ -1,0 +1,126 @@
+/* General container for the property details */
+.property-details-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* Image slider container with title beside it */
+  .image-slider-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  /* Image slider */
+  .image-slider {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .image-slider img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .image-slider img:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+  }
+  
+  /* Property Title */
+  .property-title h2 {
+    font-size: 28px;
+    color: #333;
+  }
+  
+  /* Property Description */
+  .property-description {
+    margin-top: 20px;
+  }
+  
+  .property-description h3 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .property-description p {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.6;
+  }
+  
+  /* Property Price */
+  .property-price h3 {
+    font-size: 24px;
+    color: #008080;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  /* Facilities Section */
+  .property-facilities h3 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .facility-boxes {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .facility-box {
+    background-color: #e5f4f1;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    flex-basis: 30%;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Property Address */
+  .property-address h3 {
+    font-size: 22px;
+    color: #333;
+    margin-top: 30px;
+  }
+  
+  .property-address p {
+    font-size: 16px;
+    color: #666;
+  }
+
+  /* General container for the property details */
+.property-details-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* Image slider container with title beside it */
+  .image-slider-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    width: 70%;
+  }
+  
