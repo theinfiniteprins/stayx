@@ -463,6 +463,9 @@ body {
   border-radius: 4px;
   cursor: pointer;
 }
+.upload-prop{
+  display: flex;
+}
 
 .add-facility-button:hover {
   background-color: #006666;
@@ -472,12 +475,17 @@ body {
   background-color: #008080;
   color: white;
   border: none;
-  padding: 15px;
-  border-radius: 4px;
+  padding: 1rem 3rem;
+  border-radius: 10px;
   cursor: pointer;
+  margin: 1rem 0;
+  margin-left: 68%;
 }
 
 .submit-button:hover {
   background-color: #006666;
 }
+
+
+
 

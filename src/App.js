@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
+// import ShowProperty from './components/ShowProperty';
 import UploadProperty from './components/UploadProperty';
 import './styles.css';
 
@@ -12,6 +13,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/upload-property" element={<UploadProperty />} />
+        {/* <Route path="/property/:id" element={<ShowProperty />} /> */}
       </Routes>
     </Router>
   );

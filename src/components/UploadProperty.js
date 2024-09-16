@@ -64,7 +64,10 @@ const UploadProperty = () => {
 
   return (
     <div className="upload-property-container">
-      <h2>Upload Property</h2>
+      <div className="upload-prop">
+        <h2>Upload Property</h2>
+        <button onClick={handleSubmit} className="submit-button">Upload Property</button>
+      </div>
       <div className="tab-container">
         <button
           className={`tab-button ${activeSection === 'basicDetails' ? 'active' : ''}`}
@@ -92,7 +95,7 @@ const UploadProperty = () => {
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="upload-property-form">
+      <form className="upload-property-form">
         {activeSection === 'basicDetails' && (
           <div className="form-section">
             <h3>Basic Details</h3>
@@ -225,8 +228,6 @@ const UploadProperty = () => {
             </div>
           </div>
         )}
-
-        <button type="submit" className="submit-button">Upload Property</button>
       </form>
     </div>
   );

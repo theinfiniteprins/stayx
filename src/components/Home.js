@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Slider from "react-slick";
+import { useNavigate } from "react-router-dom";  // Import useNavigate
 import "../styles.css";
 
 // Dummy data for the slider
@@ -47,6 +48,8 @@ const NextArrow = ({ className, style, onClick }) => (
 );
 
 const Home = () => {
+  const navigate = useNavigate();  // Initialize useNavigate
+
   const [city, setCity] = useState("Any");
   const [category, setCategory] = useState("Any");
   const [bedrooms, setBedrooms] = useState("Any");
@@ -66,12 +69,21 @@ const Home = () => {
     nextArrow: <NextArrow />,
   };
 
+  // Function to navigate to the property page
+  const handleViewProperty = (id) => {
+    navigate(`/property/${id}`);
+  };
+
   return (
     <div className="home-container">
       <div className="slider-container">
         <Slider {...settings}>
           {sliderData.map((property) => (
-            <div className="slider-item" key={property.id}>
+            <div
+              className="slider-item"
+              key={property.id}
+              onClick={() => handleViewProperty(property.id)} // Navigate when slider item is clicked
+            >
               <img
                 src={property.image}
                 alt={property.title}
@@ -82,8 +94,8 @@ const Home = () => {
                 <p>{property.city}</p>
                 <p>Price: ₹{property.price}</p>
                 <a
-                  href={`/property/${property.id}`}
                   className="view-property-button"
+                  onClick={() => handleViewProperty(property.id)} // Navigate when view button is clicked
                 >
                   <i className="fa fa-eye" aria-hidden="true"></i> View Property
                 </a>

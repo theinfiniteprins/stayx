@@ -57,13 +57,15 @@ const Navbar = () => {
         {/* Dropdown menu */}
         {menuOpen && (
           <div className="dropdown-menu" ref={menuRef}>
-            <ul>
-              <li><i className="menu-item-icon">👤</i> Profile</li>
-              <li><i className="menu-item-icon">🏠</i> My Property</li>
-              <li><i className="menu-item-icon">➕</i> Upload Property</li>
-              <li><i class="fa fa-sign-out" aria-hidden="true"></i> Sign Out</li>
-            </ul>
-          </div>
+              <ul>
+                <li><i className="menu-item-icon">👤</i> Profile</li>
+                <li><i className="menu-item-icon">🏠</i> My Property</li>
+                <li><i className="menu-item-icon">❤️</i> Favourite</li>
+                <li><i className="menu-item-icon">📄</i> Terms and Conditions</li>
+                <li><i className="menu-item-icon">🔒</i> Privacy Policy</li>
+                <li><i className="fa fa-sign-out" aria-hidden="true"></i> Sign Out</li>
+              </ul>
+          </div>        
         )}
       </div>
     </nav>
