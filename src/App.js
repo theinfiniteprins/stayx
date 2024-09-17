@@ -4,6 +4,8 @@ import Navbar from './components/Navbar';
 import Home from './components/Home';
 import UploadProperty from './components/UploadProperty';
 import ShowProperty from './components/ShowProperty';
+import Login from './components/Login';
+import Register from './components/Register';
 import './styles.css';
 
 const App = () => {
@@ -14,6 +16,8 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/upload-property" element={<UploadProperty />} />
         <Route path="/property/:id" element={<ShowProperty />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </Router>
   );
