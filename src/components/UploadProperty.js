@@ -1,23 +1,20 @@
-import React, { useState } from 'react';
-import '../styles.css';
+import React, { useState } from "react";
 
 const UploadProperty = () => {
-  const [activeSection, setActiveSection] = useState('basicDetails');
+  const [activeSection, setActiveSection] = useState("basicDetails");
 
   const [basicDetails, setBasicDetails] = useState({
-    title: '',
-    description: '',
-    price: '',
-    securityAmount: '',
+    title: "",
+    description: "",
+    price: "",
+    securityAmount: "",
   });
 
-  const [facilities, setFacilities] = useState([
-    { name: '', image: null },
-  ]);
+  const [facilities, setFacilities] = useState([{ name: "", image: null }]);
 
   const [location, setLocation] = useState({
-    address: '',
-    city: '',
+    address: "",
+    city: "",
   });
 
   const [images, setImages] = useState([]);
@@ -41,7 +38,7 @@ const UploadProperty = () => {
   };
 
   const addFacility = () => {
-    setFacilities([...facilities, { name: '', image: null }]);
+    setFacilities([...facilities, { name: "", image: null }]);
   };
 
   const handleLocationChange = (e) => {
@@ -55,167 +52,226 @@ const UploadProperty = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Process the form data here, e.g., send it to an API endpoint
-    console.log('Basic Details:', basicDetails);
-    console.log('Facilities:', facilities);
-    console.log('Location:', location);
-    console.log('Images:', images);
+    console.log("Basic Details:", basicDetails);
+    console.log("Facilities:", facilities);
+    console.log("Location:", location);
+    console.log("Images:", images);
   };
 
   return (
-    <div className="upload-property-container">
-      <div className="upload-prop">
-        <h2>Upload Property</h2>
-        <button onClick={handleSubmit} className="submit-button">Upload Property</button>
-      </div>
-      <div className="tab-container">
+    <div className="container mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
+      <div className="mb-4">
+        <h2 className="text-2xl font-bold text-teal-600">Upload Property</h2>
         <button
-          className={`tab-button ${activeSection === 'basicDetails' ? 'active' : ''}`}
-          onClick={() => setActiveSection('basicDetails')}
+          onClick={handleSubmit}
+          className="bg-teal-600 text-white px-4 py-2 rounded mt-4"
+        >
+          Upload Property
+        </button>
+      </div>
+
+      <div className="flex space-x-4 mb-6">
+        <button
+          className={`px-4 py-2 rounded ${
+            activeSection === "basicDetails"
+              ? "bg-teal-600 text-white"
+              : "bg-gray-300"
+          }`}
+          onClick={() => setActiveSection("basicDetails")}
         >
           Basic Details
         </button>
         <button
-          className={`tab-button ${activeSection === 'facilities' ? 'active' : ''}`}
-          onClick={() => setActiveSection('facilities')}
+          className={`px-4 py-2 rounded ${
+            activeSection === "facilities"
+              ? "bg-teal-600 text-white"
+              : "bg-gray-300"
+          }`}
+          onClick={() => setActiveSection("facilities")}
         >
           Facilities
         </button>
         <button
-          className={`tab-button ${activeSection === 'location' ? 'active' : ''}`}
-          onClick={() => setActiveSection('location')}
+          className={`px-4 py-2 rounded ${
+            activeSection === "location"
+              ? "bg-teal-600 text-white"
+              : "bg-gray-300"
+          }`}
+          onClick={() => setActiveSection("location")}
         >
           Location
         </button>
         <button
-          className={`tab-button ${activeSection === 'images' ? 'active' : ''}`}
-          onClick={() => setActiveSection('images')}
+          className={`px-4 py-2 rounded ${
+            activeSection === "images"
+              ? "bg-teal-600 text-white"
+              : "bg-gray-300"
+          }`}
+          onClick={() => setActiveSection("images")}
         >
           Images
         </button>
       </div>
 
-      <form className="upload-property-form">
-        {activeSection === 'basicDetails' && (
-          <div className="form-section">
-            <h3>Basic Details</h3>
-            <div className="form-group">
-              <label htmlFor="title">Property Title:</label>
+      <form>
+        {activeSection === "basicDetails" && (
+          <div className="mb-6">
+            <h3 className="text-xl font-semibold mb-4">Basic Details</h3>
+            <div className="mb-4">
+              <label htmlFor="title" className="block mb-1 text-sm">
+                Property Title:
+              </label>
               <input
                 type="text"
                 id="title"
                 name="title"
                 value={basicDetails.title}
                 onChange={handleBasicDetailsChange}
+                className="w-full p-2 border border-gray-300 rounded"
                 required
               />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="description">Description:</label>
+            <div className="mb-4">
+              <label htmlFor="description" className="block mb-1 text-sm">
+                Description:
+              </label>
               <textarea
                 id="description"
                 name="description"
                 value={basicDetails.description}
                 onChange={handleBasicDetailsChange}
+                className="w-full p-2 border border-gray-300 rounded"
                 required
               />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="price">Monthly Rent (₹):</label>
+            <div className="mb-4">
+              <label htmlFor="price" className="block mb-1 text-sm">
+                Monthly Rent (₹):
+              </label>
               <input
                 type="number"
                 id="price"
                 name="price"
                 value={basicDetails.price}
                 onChange={handleBasicDetailsChange}
+                className="w-full p-2 border border-gray-300 rounded"
                 required
               />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="securityAmount">Security Amount (₹): (Optional)</label>
+            <div className="mb-4">
+              <label
+                htmlFor="securityAmount"
+                className="block mb-1 text-sm"
+              >
+                Security Amount (₹): (Optional)
+              </label>
               <input
                 type="number"
                 id="securityAmount"
                 name="securityAmount"
                 value={basicDetails.securityAmount}
                 onChange={handleBasicDetailsChange}
-                required
+                className="w-full p-2 border border-gray-300 rounded"
               />
             </div>
           </div>
         )}
 
-        {activeSection === 'facilities' && (
-          <div className="form-section">
-            <h3>Facilities</h3>
+        {activeSection === "facilities" && (
+          <div className="mb-6">
+            <h3 className="text-xl font-semibold mb-4">Facilities</h3>
             {facilities.map((facility, index) => (
-              <div key={index} className="facility-group">
-                <div className="form-group">
-                  <label htmlFor={`facilityName_${index}`}>Facility Name:</label>
+              <div key={index} className="mb-4">
+                <div className="mb-2">
+                  <label
+                    htmlFor={`facilityName_${index}`}
+                    className="block mb-1 text-sm"
+                  >
+                    Facility Name:
+                  </label>
                   <input
                     type="text"
                     id={`facilityName_${index}`}
                     name="name"
                     value={facility.name}
                     onChange={(e) => handleFacilityChange(index, e)}
+                    className="w-full p-2 border border-gray-300 rounded"
                   />
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor={`facilityImage_${index}`}>Facility Image:</label>
+                <div className="mb-2">
+                  <label
+                    htmlFor={`facilityImage_${index}`}
+                    className="block mb-1 text-sm"
+                  >
+                    Facility Image:
+                  </label>
                   <input
                     type="file"
                     id={`facilityImage_${index}`}
                     name="image"
                     accept="image/*"
                     onChange={(e) => handleFacilityImageChange(index, e)}
+                    className="w-full p-2 border border-gray-300 rounded"
                   />
                 </div>
               </div>
             ))}
-            <button type="button" onClick={addFacility} className="add-facility-button">
+            <button
+              type="button"
+              onClick={addFacility}
+              className="bg-teal-600 text-white px-4 py-2 rounded mt-4"
+            >
               Add Another Facility
             </button>
           </div>
         )}
 
-        {activeSection === 'location' && (
-          <div className="form-section">
-            <h3>Location</h3>
-            <div className="form-group">
-              <label htmlFor="address">Address:</label>
+        {activeSection === "location" && (
+          <div className="mb-6">
+            <h3 className="text-xl font-semibold mb-4">Location</h3>
+            <div className="mb-4">
+              <label htmlFor="address" className="block mb-1 text-sm">
+                Address:
+              </label>
               <input
                 type="text"
                 id="address"
                 name="address"
                 value={location.address}
                 onChange={handleLocationChange}
+                className="w-full p-2 border border-gray-300 rounded"
                 required
               />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="city">City:</label>
+            <div className="mb-4">
+              <label htmlFor="city" className="block mb-1 text-sm">
+                City:
+              </label>
               <input
                 type="text"
                 id="city"
                 name="city"
                 value={location.city}
                 onChange={handleLocationChange}
+                className="w-full p-2 border border-gray-300 rounded"
                 required
               />
             </div>
           </div>
         )}
 
-        {activeSection === 'images' && (
-          <div className="form-section">
-            <h3>Images</h3>
-            <div className="form-group">
-              <label htmlFor="images">Upload Images:</label>
+        {activeSection === "images" && (
+          <div className="mb-6">
+            <h3 className="text-xl font-semibold mb-4">Images</h3>
+            <div className="mb-4">
+              <label htmlFor="images" className="block mb-1 text-sm">
+                Upload Images:
+              </label>
               <input
                 type="file"
                 id="images"
@@ -223,6 +279,7 @@ const UploadProperty = () => {
                 accept="image/*"
                 multiple
                 onChange={handleImagesChange}
+                className="w-full p-2 border border-gray-300 rounded"
                 required
               />
             </div>
