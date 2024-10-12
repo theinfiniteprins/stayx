@@ -6,6 +6,7 @@ import UploadProperty from './components/UploadProperty';
 import ShowProperty from './components/ShowProperty';
 import Login from './components/Login';
 import Register from './components/Register';
+import Profile from './components/profile'
 import './styles.css';
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/property/:id" element={<ShowProperty />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
   );
