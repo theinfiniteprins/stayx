@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Slider from "react-slick";
 import { useNavigate } from "react-router-dom";  // Import useNavigate
 import "../styles.css";
+import MostLiked from "./most_like";
 
 // Dummy data for the slider
 const sliderData = [
@@ -180,6 +181,8 @@ const Home = () => {
           <button className="search-button">Search</button>
         </div>
       </div>
+
+      <MostLiked></MostLiked>
     </div>
   );
 };
