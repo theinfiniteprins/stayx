@@ -11,8 +11,9 @@ const Navbar = () => {
   const menuIconRef = useRef(null);
   const navigate = useNavigate();
   
-  const token = getCookie('token'); // Get the token from the cookie
-  const isAuthenticated = !!token; // Check if the token exists
+  // Use `isLogged` cookie to check if the user is authenticated
+  const isLogged = getCookie('isLogged'); // Get the isLogged cookie
+  const isAuthenticated = isLogged === 'true'; // Check if the isLogged cookie exists and is set to 'true'
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -63,8 +64,8 @@ const Navbar = () => {
       });
 
       if (response.ok) {
-        // Clear the token from the cookie
-        document.cookie = "token=; path=/; max-age=0; SameSite=Strict"; // Clear the token
+        // Clear the `isLogged` cookie
+        document.cookie = "isLogged=; path=/; max-age=0; SameSite=Strict"; // Clear the isLogged cookie
         navigate('/'); // Optionally redirect to the home page
       } else {
         console.error('Failed to log out');

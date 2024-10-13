@@ -31,10 +31,11 @@ const Login = () => {
       if (response.ok) {
         const data = await response.json();
         
-        // Store JWT token in the browser's cookie
-        // Use secure cookies in production, hence ensure HTTPS (adjust secure flag if running on localhost)
+        // Store JWT token in the browser's cookie (handled by server if HttpOnly)
+        
+        // Set a custom `isLogged` cookie to indicate successful login without an expiration timer
         const isSecure = window.location.protocol === 'https:'; // Check if running over HTTPS
-        //document.cookie = `token=${data.token}; path=/; max-age=86400; ${isSecure ? 'secure;' : ''} SameSite=Strict`;
+        document.cookie = `isLogged=true; path=/; ${isSecure ? 'secure;' : ''} SameSite=Strict`;
 
         console.log('Login successful');
         navigate('/'); // Redirect to the dashboard after login
