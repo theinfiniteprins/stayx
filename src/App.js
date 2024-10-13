@@ -6,7 +6,9 @@ import UploadProperty from './components/UploadProperty';
 import ShowProperty from './components/ShowProperty';
 import Login from './components/Login';
 import Register from './components/Register';
-import Profile from './components/profile'
+import Profile from './components/profile';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsAndConditions from './components/TermsAndConditions';
 import './styles.css';
 
 const App = () => {
@@ -20,6 +22,8 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
       </Routes>
     </Router>
   );

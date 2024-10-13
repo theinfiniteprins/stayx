@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../styles.css';
 import { FaUser, FaHome, FaHeart, FaFileAlt, FaLock, FaSignOutAlt } from 'react-icons/fa';
 import config from "../configs/config";
+import { getCookie } from '../utils/getCookie'; // Import the getCookie utility
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -10,8 +11,8 @@ const Navbar = () => {
   const menuIconRef = useRef(null);
   const navigate = useNavigate();
   
-  const token = localStorage.getItem('token');
-  const isAuthenticated = !!token;
+  const token = getCookie('token'); // Get the token from the cookie
+  const isAuthenticated = !!token; // Check if the token exists
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -46,8 +47,12 @@ const Navbar = () => {
     navigate('/login');
   };
 
-  const handleRegisterClick = () => {
-    navigate('/register');
+  const handlePrivacyPolicyClick = () => {
+    navigate('/privacy-policy');
+  };
+
+  const handleTermsAndConditionsClick = () => {
+    navigate('/terms-and-conditions');
   };
 
   const handleSignOut = async () => {
@@ -58,8 +63,8 @@ const Navbar = () => {
       });
 
       if (response.ok) {
-        // Clear the token from local storage and refresh the UI
-        localStorage.removeItem('token');
+        // Clear the token from the cookie
+        document.cookie = "token=; path=/; max-age=0; SameSite=Strict"; // Clear the token
         navigate('/'); // Optionally redirect to the home page
       } else {
         console.error('Failed to log out');
@@ -103,14 +108,14 @@ const Navbar = () => {
                 <li onClick={handleProfileClick}><FaUser /> Profile</li>
                 <li><FaHome /> My Properties</li>
                 <li><FaHeart /> Favorites</li>
-                <li><FaFileAlt /> Terms and Conditions</li>
-                <li><FaLock /> Privacy Policy</li>
+                <li onClick={handleTermsAndConditionsClick}><FaFileAlt /> Terms and Conditions</li>
+                <li onClick={handlePrivacyPolicyClick}><FaLock /> Privacy Policy</li>
                 <li onClick={handleSignOut}><FaSignOutAlt /> Sign Out</li>
               </>
             ) : (
               <>
-                <li><FaFileAlt /> Terms and Conditions</li>
-                <li><FaLock /> Privacy Policy</li>
+                <li onClick={handleTermsAndConditionsClick}><FaFileAlt /> Terms and Conditions</li>
+                <li onClick={handlePrivacyPolicyClick}><FaLock /> Privacy Policy</li>
               </>
             )}
           </ul>

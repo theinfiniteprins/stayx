@@ -17,6 +17,7 @@ const Login = () => {
     };
 
     try {
+      // Send a POST request to the authentication API
       const response = await fetch(`${config.baseUrl}/auth/signin`, {
         method: 'POST',
         headers: {
@@ -26,21 +27,24 @@ const Login = () => {
         credentials: 'include', // To ensure cookies are included
       });
 
+      // Check if the response is successful
       if (response.ok) {
         const data = await response.json();
-
-        // Store JWT token in localStorage
-        localStorage.setItem('token', JSON.stringify(data.token));
+        
+        // Store JWT token in the browser's cookie
+        // Use secure cookies in production, hence ensure HTTPS (adjust secure flag if running on localhost)
+        const isSecure = window.location.protocol === 'https:'; // Check if running over HTTPS
+        document.cookie = `token=${data.token}; path=/; max-age=86400; ${isSecure ? 'secure;' : ''} SameSite=Strict`;
 
         console.log('Login successful');
-        navigate('/'); // Redirect to dashboard after login
+        navigate('/'); // Redirect to the dashboard after login
       } else {
         const result = await response.json();
-        setError(result.message || 'Login failed');
+        setError(result.message || 'Login failed'); // Display error message from API
       }
     } catch (error) {
       console.error('Error:', error);
-      setError('Something went wrong. Please try again.');
+      setError('Something went wrong. Please try again.'); // Generic error message
     }
   };
 
