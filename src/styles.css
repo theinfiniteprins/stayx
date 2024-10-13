@@ -11,8 +11,9 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #008080; /* Theme color */
-  padding: 5px 20px;
+  padding: 0.3rem 1.2rem;
+  background-color: #008080;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   color: white;
 }
 
@@ -53,7 +54,7 @@ body {
   border-radius: 4px;
   margin-right: 10px;
   cursor: pointer;
-  text-decoration: none; /* Remove underline */
+  text-decoration: none;
   color: black;
 }
 
@@ -80,39 +81,53 @@ body {
 .menu-icon {
   font-size: 24px;
   color: white;
-  font-style: normal; /* Avoid italic by default */
+  font-style: normal;
 }
 
+/* Dropdown menu styles */
 .dropdown-menu {
   position: absolute;
-  right: 10px;
   top: 60px;
-  background-color: white;
+  right: 10px;
+  padding: 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 10px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
   z-index: 100;
 }
 
+.dropdown-menu.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
 .dropdown-menu ul {
-  list-style: none;
+  list-style-type: none;
   padding: 0;
   margin: 0;
 }
 
-/* Dropdown menu item styles */
 .dropdown-menu li {
   padding: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  color: black; /* Set font color to black */
+  color: black;
 }
 
-.dropdown-menu li i {
+.dropdown-menu li svg {
   margin-right: 8px;
   font-style: normal;
+}
+
+.dropdown-menu li:hover {
+  background-color: #f0f0f0;
 }
 
 /* Home page styles */
@@ -142,7 +157,8 @@ body {
 }
 
 /* Left and right arrow styles */
-.custom-arrow-left, .custom-arrow-right {
+.custom-arrow-left,
+.custom-arrow-right {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -162,11 +178,13 @@ body {
   right: 10px; /* Adjust as needed */
 }
 
-.custom-arrow-left:hover, .custom-arrow-right:hover {
+.custom-arrow-left:hover,
+.custom-arrow-right:hover {
   color: #005959; /* Darker teal for hover effect */
 }
 
-.custom-arrow-left i, .custom-arrow-right i {
+.custom-arrow-left i,
+.custom-arrow-right i {
   font-size: 100px; /* Double the previous icon size */
   font-style: normal; /* Remove italic style */
 }
@@ -177,7 +195,12 @@ body {
   bottom: 10px; /* Adjust as needed */
   left: 10px; /* Adjust as needed */
   width: 175px; /* Fixed width */
-  background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent background */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.8
+  ); /* Slightly transparent background */
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -222,8 +245,6 @@ body {
 .view-property-button:hover {
   background-color: #f0f0f0;
 }
-
-
 
 /* Search and Filter Box */
 .search-filter-container {
@@ -328,7 +349,6 @@ body {
   border-bottom: 10px solid #008080; /* Color of the triangle */
 }
 
-
 /* Sort Dropdown */
 .filter-row select {
   font-size: 16px;
@@ -374,6 +394,3 @@ body {
     margin-bottom: 10px;
   }
 }
-
-
-
