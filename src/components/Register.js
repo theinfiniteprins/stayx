@@ -6,18 +6,47 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ name, email, mobileNumber, password });
-    // If registration is successful, you can redirect like this:
-    // navigate('/login');
+  
+    const userData = {
+      name,
+      email,
+      mobileNumber,
+      password,
+    };
+  
+    try {
+      const response = await fetch('https://rent-x-backend-nine.vercel.app/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+  
+      if (response.ok) {
+        console.log('User registered successfully');
+        navigate('/login');
+      } else {
+        const result = await response.json();
+        console.log('Response:', result); // Log the actual error from the backend
+        setError(result.message || 'Registration failed');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Something went wrong. Please try again.');
+    }
   };
+  
 
   return (
     <div className="max-w-md mx-auto mt-20 p-6 bg-gray-100 rounded-lg shadow-lg shadow-gray-800/80">
       <h2 className="text-center mb-5 text-2xl font-bold">Register</h2>
+      {error && <p className="text-red-500">{error}</p>}
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block mb-1">Name</label>
