@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import config from "../configs/config";
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -20,7 +21,7 @@ const Register = () => {
     };
   
     try {
-      const response = await fetch('https://rent-x-backend-nine.vercel.app/users', {
+      const response = await fetch(`${config.baseUrl}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

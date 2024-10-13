@@ -1,20 +1,22 @@
-// Navbar/Navbar.js
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles.css';
 import { FaUser, FaHome, FaHeart, FaFileAlt, FaLock, FaSignOutAlt } from 'react-icons/fa';
+import config from "../configs/config";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
-  const menuIconRef = useRef(null); 
+  const menuIconRef = useRef(null);
   const navigate = useNavigate();
+  
+  const token = localStorage.getItem('token');
+  const isAuthenticated = !!token;
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
 
-  // Handle click outside the dropdown menu to close it
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target) && menuIconRef.current && 
@@ -32,13 +34,39 @@ const Navbar = () => {
     };
   }, [menuOpen]);
 
-  // Function to navigate to home when the logo is clicked
   const handleLogoClick = () => {
     navigate('/');
   };
 
   const handleProfileClick = () => {
     navigate('/profile');
+  };
+
+  const handleLoginClick = () => {
+    navigate('/login');
+  };
+
+  const handleRegisterClick = () => {
+    navigate('/register');
+  };
+
+  const handleSignOut = async () => {
+    try {
+      const response = await fetch(`${config.baseUrl}/auth/signout`, {
+        method: 'GET',
+        credentials: 'include', // to send cookies
+      });
+
+      if (response.ok) {
+        // Clear the token from local storage and refresh the UI
+        localStorage.removeItem('token');
+        navigate('/'); // Optionally redirect to the home page
+      } else {
+        console.error('Failed to log out');
+      }
+    } catch (error) {
+      console.error('Error during sign out:', error);
+    }
   };
 
   return (
@@ -50,13 +78,19 @@ const Navbar = () => {
         <h1 className="navbar-title">RentX</h1>
       </div>
       <div className="navbar-right">
-        {/* Upload Property button with link */}
-        <Link to="/upload-property" className="upload-box">
-          <span className="upload-plus">➕</span>
-          <span className="upload-text">Upload Property</span>
-        </Link>
+        {/* Conditional rendering based on authentication status */}
+        {isAuthenticated ? (
+          <Link to="/upload-property" className="upload-box">
+            <span className="upload-plus">➕</span>
+            <span className="upload-text">Upload Property</span>
+          </Link>
+        ) : (
+          <div className="upload-box" onClick={handleLoginClick}>
+            <span className="upload-plus">🔑</span>
+            <span className="upload-text">Login/Register</span>
+          </div>
+        )}
 
-        {/* Menu icon */}
         <div className="menu-icon-container" onClick={toggleMenu} ref={menuIconRef}>
           <i className="menu-icon">{menuOpen ? '✖' : '☰'}</i>
         </div>
@@ -64,12 +98,21 @@ const Navbar = () => {
         {/* Dropdown menu */}
         <div className={`dropdown-menu ${menuOpen ? 'open' : ''}`} ref={menuRef}>
           <ul>
-            <li onClick={handleProfileClick}><FaUser /> Profile</li>
-            <li><FaHome /> My Properties</li>
-            <li><FaHeart /> Favorites</li>
-            <li><FaFileAlt /> Terms and Conditions</li>
-            <li><FaLock /> Privacy Policy</li>
-            <li><FaSignOutAlt /> Sign Out</li>
+            {isAuthenticated ? (
+              <>
+                <li onClick={handleProfileClick}><FaUser /> Profile</li>
+                <li><FaHome /> My Properties</li>
+                <li><FaHeart /> Favorites</li>
+                <li><FaFileAlt /> Terms and Conditions</li>
+                <li><FaLock /> Privacy Policy</li>
+                <li onClick={handleSignOut}><FaSignOutAlt /> Sign Out</li>
+              </>
+            ) : (
+              <>
+                <li><FaFileAlt /> Terms and Conditions</li>
+                <li><FaLock /> Privacy Policy</li>
+              </>
+            )}
           </ul>
         </div>
       </div>
