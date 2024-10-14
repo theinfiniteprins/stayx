@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { cloudinaryConfig } from "../configs/cloudinaryConfig"; 
 
 const ImageUpload = () => {
   const [imageFile, setImageFile] = useState(null); // Track selected file
@@ -29,14 +30,15 @@ const ImageUpload = () => {
     // Prepare form data
     const formData = new FormData();
     formData.append("file", imageFile);
-    formData.append("upload_preset", "qwxt59pp"); // Replace with your Cloudinary upload preset
+    formData.append("upload_preset", cloudinaryConfig.uploadPreset); // Replace with your Cloudinary upload preset
+    formData.append("cloud_name", cloudinaryConfig.cloudName);
 
     try {
       setUploading(true);
       setError("");
 
       // Send POST request using fetch
-      const response = await fetch("https://api.cloudinary.com/v1_1/datwzfboc/image/upload", {
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`, {
         method: "POST",
         body: formData,
       });

@@ -1,39 +1,37 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom"; // To get the id from the URL
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
+import axios from "axios";
 
 const ShowProperty = () => {
+  const { id } = useParams(); // Get the ID from the URL
   const [property, setProperty] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate fetching data by setting a dummy property
-    const dummyProperty = {
-      title: "Luxury Apartment in Downtown",
-      description:
-        "A beautiful 3-bedroom luxury apartment located in the heart of the city.",
-      category: { name: "Apartment" },
-      price: 25000,
-      facilities: [
-        { name: "WiFi" },
-        { name: "Swimming Pool" },
-        { name: "Parking" },
-      ],
-      images: [
-        "/images/property1.jpg",
-        "/images/property2.png",
-        "/images/property3.jpg",
-      ],
-      address: "123 Main St",
-      city: "Nadiad",
-      state: "Gujarat",
-      country: "India",
+    const fetchProperty = async () => {
+      try {
+        const response = await axios.get(
+          `https://rent-x-backend-nine.vercel.app/properties/${id}`
+        );
+        setProperty(response.data); // Set fetched data as property
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching property data:", error);
+        setLoading(false);
+      }
     };
 
-    setProperty(dummyProperty); // Set dummy data as property
-  }, []);
+    fetchProperty();
+  }, [id]); // The effect runs whenever the id changes
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   if (!property) {
-    return <div>Loading...</div>;
+    return <div>No property data available.</div>;
   }
 
   // Convert images to the format required by react-image-gallery
@@ -64,6 +62,12 @@ const ShowProperty = () => {
             <h2 className="text-3xl font-bold">{property.title}</h2>
           </div>
 
+          {/* Property Category */}
+          <div className="property-category mb-4">
+            <h3 className="text-xl font-semibold mb-2">Category</h3>
+            <p className="text-gray-700">{property.category.name}</p>
+          </div>
+
           {/* Property Description */}
           <div className="property-description mb-6">
             <h3 className="text-xl font-semibold mb-2">Description</h3>
@@ -72,38 +76,43 @@ const ShowProperty = () => {
 
           {/* Property Price */}
           <div className="property-price mb-6">
-            <h3 className="text-xl font-semibold mb-2">Price (Monthly)</h3>
+            <h3 className="text-xl font-semibold mb-2">Monthly Rent</h3>
             <p className="text-2xl text-teal-600 font-bold">
-              ₹{property.price}
+              ₹{property.monthlyRent}
             </p>
           </div>
-        </div>
-      </div>
 
-      {/* Facilities and Address section below the slider and details */}
-      <div className="mt-8">
-        {/* Facilities */}
-        <div className="property-facilities mb-6">
-          <h3 className="text-xl font-semibold mb-2">Facilities:</h3>
-          <div className="flex gap-4 flex-wrap">
-            {property.facilities.map((facility, index) => (
-              <div
-                key={index}
-                className="bg-teal-100 px-6 py-3 rounded-lg shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl cursor-pointer"
-              >
-                {facility.name}
-              </div>
-            ))}
+          {/* Security Deposit */}
+          <div className="property-security-deposit mb-6">
+            <h3 className="text-xl font-semibold mb-2">Security Deposit</h3>
+            <p className="text-2xl text-teal-600 font-bold">
+              ₹{property.securityDeposit}
+            </p>
           </div>
-        </div>
 
-        {/* Property Address */}
-        <div className="property-address">
-          <h3 className="text-xl font-semibold mb-2">Address:</h3>
-          <p className="text-gray-700">
-            {property.address}, {property.city}, {property.state},{" "}
-            {property.country}
-          </p>
+          {/* Property Facilities */}
+          <div className="property-facilities mb-6">
+            <h3 className="text-xl font-semibold mb-2">Facilities:</h3>
+            <div className="flex gap-4 flex-wrap">
+              {property.facilities.map((facility, index) => (
+                <div
+                  key={index}
+                  className="bg-teal-100 px-6 py-3 rounded-lg shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl cursor-pointer"
+                >
+                  {facility.value}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Property Address */}
+          <div className="property-address">
+            <h3 className="text-xl font-semibold mb-2">Address:</h3>
+            <p className="text-gray-700">
+              {property.address}, {property.city}, {property.state},{" "}
+              {property.country}
+            </p>
+          </div>
         </div>
       </div>
     </div>

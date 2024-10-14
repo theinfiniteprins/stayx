@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import config from "../configs/config"; // Assuming you have config.js for baseUrl
-import { cloudinaryConfig } from "../configs/cloudinaryConfig"; 
+import { cloudinaryConfig } from "../configs/cloudinaryConfig";
 
 const UploadProperty = () => {
   const [activeSection, setActiveSection] = useState("basicDetails");
@@ -19,7 +19,9 @@ const UploadProperty = () => {
   });
   const [images, setImages] = useState([]); // For storing local files
   const [categories, setCategories] = useState([]);
-  const [selectedCategoryFacilities, setSelectedCategoryFacilities] = useState([]);
+  const [selectedCategoryFacilities, setSelectedCategoryFacilities] = useState(
+    []
+  );
   const [facilityValues, setFacilityValues] = useState({});
 
   // Cloudinary configuration using fetch
@@ -30,10 +32,13 @@ const UploadProperty = () => {
     formData.append("cloud_name", cloudinaryConfig.cloudName);
 
     try {
-      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`, {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const data = await response.json();
 
@@ -70,8 +75,12 @@ const UploadProperty = () => {
   // Update facilities list when the category changes
   useEffect(() => {
     if (basicDetails.category) {
-      const selectedCategory = categories.find((cat) => cat._id === basicDetails.category);
-      setSelectedCategoryFacilities(selectedCategory ? selectedCategory.facilities : []);
+      const selectedCategory = categories.find(
+        (cat) => cat._id === basicDetails.category
+      );
+      setSelectedCategoryFacilities(
+        selectedCategory ? selectedCategory.facilities : []
+      );
       setFacilityValues({});
     } else {
       setSelectedCategoryFacilities([]);
@@ -93,14 +102,18 @@ const UploadProperty = () => {
     setImages((prevImages) => [...prevImages, ...files]); // Append new images to the array
   };
 
-  const handleFacilityChange = (e, facilityId) => {
-    const { name, value } = e.target;
-    setFacilityValues({ ...facilityValues, [facilityId]: value });
+  const handleFacilityChange = (e, facilityId, type) => {
+    const { value } = e.target;
+    const updatedValue =
+      type === "radio" ? (value === "true" ? true : false) : value;
+    setFacilityValues({ ...facilityValues, [facilityId]: updatedValue });
   };
 
   // Function to remove an image from the array
   const removeImage = (indexToRemove) => {
-    setImages((prevImages) => prevImages.filter((_, index) => index !== indexToRemove));
+    setImages((prevImages) =>
+      prevImages.filter((_, index) => index !== indexToRemove)
+    );
   };
 
   const handleSubmit = async (e) => {
@@ -108,7 +121,9 @@ const UploadProperty = () => {
     console.log("Submit Button Clicked");
 
     // Upload images to Cloudinary and get their URLs
-    const imageUploadPromises = images.map((image) => uploadImageToCloudinary(image));
+    const imageUploadPromises = images.map((image) =>
+      uploadImageToCloudinary(image)
+    );
     const uploadedImageUrls = await Promise.all(imageUploadPromises);
 
     // Filter out failed uploads
@@ -169,13 +184,15 @@ const UploadProperty = () => {
     }
   };
 
-
   return (
     <div className="container mx-auto p-6">
       <div className="bg-white p-8 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-teal-600">Upload Property</h2>
-          <button onClick={handleSubmit} className="bg-teal-600 text-white px-4 py-2 rounded">
+          <button
+            onClick={handleSubmit}
+            className="bg-teal-600 text-white px-4 py-2 rounded"
+          >
             Upload Property
           </button>
         </div>
@@ -183,7 +200,9 @@ const UploadProperty = () => {
         <div className="flex space-x-4 mb-6">
           <button
             className={`px-4 py-2 rounded ${
-              activeSection === "basicDetails" ? "bg-teal-600 text-white" : "bg-gray-300"
+              activeSection === "basicDetails"
+                ? "bg-teal-600 text-white"
+                : "bg-gray-300"
             }`}
             onClick={() => setActiveSection("basicDetails")}
           >
@@ -191,7 +210,9 @@ const UploadProperty = () => {
           </button>
           <button
             className={`px-4 py-2 rounded ${
-              activeSection === "facilities" ? "bg-teal-600 text-white" : "bg-gray-300"
+              activeSection === "facilities"
+                ? "bg-teal-600 text-white"
+                : "bg-gray-300"
             }`}
             onClick={() => setActiveSection("facilities")}
           >
@@ -199,7 +220,9 @@ const UploadProperty = () => {
           </button>
           <button
             className={`px-4 py-2 rounded ${
-              activeSection === "location" ? "bg-teal-600 text-white" : "bg-gray-300"
+              activeSection === "location"
+                ? "bg-teal-600 text-white"
+                : "bg-gray-300"
             }`}
             onClick={() => setActiveSection("location")}
           >
@@ -207,7 +230,9 @@ const UploadProperty = () => {
           </button>
           <button
             className={`px-4 py-2 rounded ${
-              activeSection === "images" ? "bg-teal-600 text-white" : "bg-gray-300"
+              activeSection === "images"
+                ? "bg-teal-600 text-white"
+                : "bg-gray-300"
             }`}
             onClick={() => setActiveSection("images")}
           >
@@ -245,10 +270,10 @@ const UploadProperty = () => {
               />
               <input
                 type="number"
-                name="securityAmount"
-                value={basicDetails.securityAmount}
+                name="securityDeposit"
+                value={basicDetails.securityDeposit}
                 onChange={handleBasicDetailsChange}
-                placeholder="Security Amount"
+                placeholder="Security Deposit"
                 className="block w-full border rounded p-2 mb-4"
               />
               <select
@@ -268,23 +293,78 @@ const UploadProperty = () => {
           )}
 
           {/* Facilities Section */}
-          {activeSection === "facilities" && (
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-4">Facilities</h3>
-              {selectedCategoryFacilities.map((facility) => (
-                <div key={facility._id} className="mb-4">
-                  <label className="block mb-2">{facility.name}</label>
-                  <input
-                    type="text"
-                    name={facility._id}
-                    value={facilityValues[facility._id] || ""}
-                    onChange={(e) => handleFacilityChange(e, facility._id)}
-                    className="block w-full border rounded p-2"
-                  />
+          {activeSection === "facilities" &&
+            selectedCategoryFacilities.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-xl font-semibold mb-4">Facilities</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {selectedCategoryFacilities.map((facility) => (
+                    <div key={facility._id} className="mb-4">
+                      <label className="block mb-2 font-medium text-gray-700">
+                        {facility.name}
+                      </label>
+
+                      {/* For number type facilities */}
+                      {facility.type === "number" ? (
+                        <input
+                          type="number"
+                          value={facilityValues[facility._id] || ""}
+                          onChange={(e) =>
+                            handleFacilityChange(e, facility._id, "number")
+                          }
+                          className="block w-1/2 border rounded p-2 text-center"
+                          placeholder="Enter value"
+                        />
+                      ) : (
+                        // For radio type (Yes/No) facilities, styled as toggle buttons
+                        <div className="flex items-center space-x-4">
+                          <label className="inline-flex items-center cursor-pointer">
+                            <input
+                              type="radio"
+                              value="true"
+                              checked={facilityValues[facility._id] === true}
+                              onChange={(e) =>
+                                handleFacilityChange(e, facility._id, "radio")
+                              }
+                              className="hidden"
+                            />
+                            <span
+                              className={`px-4 py-2 rounded-md ${
+                                facilityValues[facility._id] === true
+                                  ? "bg-teal-600 text-white"
+                                  : "bg-gray-200 text-gray-600"
+                              }`}
+                            >
+                              Yes
+                            </span>
+                          </label>
+                          <label className="inline-flex items-center cursor-pointer">
+                            <input
+                              type="radio"
+                              value="false"
+                              checked={facilityValues[facility._id] === false}
+                              onChange={(e) =>
+                                handleFacilityChange(e, facility._id, "radio")
+                              }
+                              className="hidden"
+                            />
+                            <span
+                              className={`px-4 py-2 rounded-md ${
+                                facilityValues[facility._id] === false
+                                  ? "bg-teal-600 text-white"
+                                  : "bg-gray-200 text-gray-600"
+                              }`}
+                            >
+                              No
+                            </span>
+                          </label>
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
+              </div>
+            )}
 
           {/* Location Section */}
           {activeSection === "location" && (
@@ -328,44 +408,27 @@ const UploadProperty = () => {
           {/* Images Section */}
           {activeSection === "images" && (
             <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-4">Property Images</h3>
-
-              {/* Add Photo Button */}
-              <div className="flex items-center">
-                <button
-                  type="button"
-                  onClick={() => document.getElementById("file-input").click()}
-                  className="bg-teal-600 text-white px-4 py-2 rounded mr-4"
-                >
-                  Add Photo
-                </button>
-                <input
-                  type="file"
-                  id="file-input"
-                  multiple
-                  accept="image/*"
-                  onChange={handleImagesChange}
-                  className="hidden"
-                />
-              </div>
-
-              {/* Preview Selected Images */}
-              <div className="mt-4 grid grid-cols-4 gap-4">
+              <h3 className="text-xl font-semibold mb-4">Images</h3>
+              <input
+                type="file"
+                multiple
+                onChange={handleImagesChange}
+                className="block w-full border rounded p-2 mb-4"
+              />
+              <div className="grid grid-cols-3 gap-4">
                 {images.map((image, index) => (
-                  <div key={index} className="relative group">
+                  <div key={index} className="relative">
                     <img
                       src={URL.createObjectURL(image)}
-                      alt={`Preview ${index}`}
-                      className="w-full h-auto rounded-lg border border-gray-300 object-cover"
+                      alt={`Property ${index}`}
+                      className="w-full h-full object-cover"
                     />
-
-                    {/* Remove Image Button */}
                     <button
                       type="button"
                       onClick={() => removeImage(index)}
-                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 opacity-75 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-0 right-0 bg-red-500 text-white px-2 py-1 rounded"
                     >
-                      &times;
+                      Remove
                     </button>
                   </div>
                 ))}
