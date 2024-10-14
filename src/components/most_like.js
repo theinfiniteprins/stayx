@@ -1,48 +1,52 @@
-import React from "react";
-import PropertyCard from "./PropertyCard"; // Import the card component
-
-// Dummy Data for most liked properties
-const mostLikedProperties = [
-  {
-    id: 1,
-    title: "Lovely Sweet Home",
-    monthlyRent: 1250,
-    city: "Nadiad",
-    state: "Gujarat",
-    image: "/images/property1.jpg",
-    facilities: ["3 Bedrooms", "2 Bathrooms"],
-    likeCount: 500,
-  },
-  {
-    id: 2,
-    title: "Cozy Cottage",
-    monthlyRent: 900,
-    city: "Ahmedabad",
-    state: "Gujarat",
-    image: "/images/property2.png",
-    facilities: ["2 Bedrooms", "1 Bathroom"],
-    likeCount: 350,
-  },
-  {
-    id: 3,
-    title: "Luxury Villa",
-    monthlyRent: 2500,
-    city: "Vadodara",
-    state: "Gujarat",
-    image: "/images/property3.jpg",
-    facilities: ["5 Bedrooms", "4 Bathrooms"],
-    likeCount: 700,
-  },
-];
+// MostLiked.jsx
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import PropertyCard from "./PropertyCard"; // Use the PropertyCard component
+import { useNavigate } from "react-router-dom";
 
 const MostLiked = () => {
+  const [mostLikedProperties, setMostLikedProperties] = useState([]);
+  const navigate = useNavigate();
+
+  // Fetch properties and sort by likeCount in descending order
+  useEffect(() => {
+    const fetchMostLikedProperties = async () => {
+      try {
+        const response = await axios.get("https://rent-x-backend-nine.vercel.app/properties");
+        const sortedProperties = response.data
+          .sort((a, b) => b.likeCount - a.likeCount) // Sort properties by likeCount
+          .slice(0, 6); // Optionally limit to top 5 most liked properties
+        setMostLikedProperties(sortedProperties);
+      } catch (error) {
+        console.error("Error fetching most liked properties:", error);
+      }
+    };
+
+    fetchMostLikedProperties();
+  }, []);
+
+  const handleViewProperty = (id) => {
+    navigate(`/property/${id}`);
+  };
+
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Most Liked Properties</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {mostLikedProperties.map((property) => (
-          <PropertyCard key={property.id} property={property} />
-        ))}
+        {mostLikedProperties.length > 0 ? (
+          mostLikedProperties.map((property) => (
+            <PropertyCard
+              key={property._id}
+              property={{
+                ...property,
+                image: property.images[0], // Use the first image from the array
+              }}
+              onClick={() => handleViewProperty(property._id)}
+            />
+          ))
+        ) : (
+          <p>No properties found.</p>
+        )}
       </div>
     </div>
   );
