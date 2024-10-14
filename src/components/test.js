@@ -1,68 +1,96 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import config from "../configs/config"; // Ensure this file has the `baseUrl` of your API
+import React, { useState } from "react";
 
-const Test = () => {
-  const [facilities, setFacilities] = useState([]); // Store the facilities
-  const [loading, setLoading] = useState(true); // Track loading state
-  const [error, setError] = useState(""); // Track error state
+const ImageUpload = () => {
+  const [imageFile, setImageFile] = useState(null); // Track selected file
+  const [previewUrl, setPreviewUrl] = useState(null); // Preview selected image
+  const [uploading, setUploading] = useState(false); // Track upload state
+  const [error, setError] = useState(""); // Track errors
+  const [uploadedUrl, setUploadedUrl] = useState(null); // Store uploaded image URL
 
-  useEffect(() => {
-    const fetchFacilities = async () => {
-      try {
-        // Fetch facilities from the API
-        const response = await axios.get(`${config.baseUrl}/facilities`, {
-          headers: {
-            "Content-Type": "application/json", // Only need this for proper request format
-          },
-          withCredentials: true, // Ensure cookies are included in the request
-        });
+  // Handle file selection
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setImageFile(file);
 
-        // Successfully fetched facilities
-        setFacilities(response.data);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching facilities:", err);
-        setError("Failed to load facilities.");
-        setLoading(false);
+    // Create a URL for image preview
+    const preview = URL.createObjectURL(file);
+    setPreviewUrl(preview);
+  };
+
+  // Handle image upload using fetch
+  const handleImageUpload = async () => {
+    if (!imageFile) {
+      setError("Please select an image to upload.");
+      return;
+    }
+
+    console.log("submited");
+
+    // Prepare form data
+    const formData = new FormData();
+    formData.append("file", imageFile);
+    formData.append("upload_preset", "qwxt59pp"); // Replace with your Cloudinary upload preset
+
+    try {
+      setUploading(true);
+      setError("");
+
+      // Send POST request using fetch
+      const response = await fetch("https://api.cloudinary.com/v1_1/datwzfboc/image/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Handle successful upload
+        setUploadedUrl(data.secure_url);
+        console.log("Uploaded image URL:", data.secure_url);
+      } else {
+        throw new Error(data.error.message || "Failed to upload");
       }
-    };
+    } catch (err) {
+      console.error("Error uploading image:", err);
+      setError("Failed to upload the image.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
-    fetchFacilities();
-  }, []);
-
-  // Loading state
-  if (loading) {
-    return <p>Loading facilities...</p>;
-  }
-
-  // Error state
-  if (error) {
-    return <p>{error}</p>;
-  }
-
-  // Render the list of facilities
   return (
     <div>
-      <h2>Facility List</h2>
-      {facilities.length > 0 ? (
-        <ul>
-          {facilities.map((facility) => (
-            <li key={facility._id}>
-              <img
-                src={facility.iconImage} // Display facility icon
-                alt={facility.name}
-                style={{ width: "30px", height: "30px" }}
-              />
-              <strong>{facility.name}</strong> - Type: {facility.type}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No facilities available.</p>
+      <h2>Image Upload Example</h2>
+
+      {/* Image Preview */}
+      {previewUrl && (
+        <div>
+          <h4>Image Preview:</h4>
+          <img src={previewUrl} alt="Selected Preview" style={{ width: "150px", height: "150px" }} />
+        </div>
+      )}
+
+      {/* File Input */}
+      <input type="file" accept="image/*" onChange={handleFileChange} />
+
+      {/* Upload Button */}
+      <button onClick={handleImageUpload} disabled={uploading}>
+        {uploading ? "Uploading..." : "Upload Image"}
+      </button>
+
+      {/* Error Message */}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {/* Display Uploaded Image URL */}
+      {uploadedUrl && (
+        <div>
+          <h4>Uploaded Image:</h4>
+          <img src={uploadedUrl} alt="Uploaded" style={{ width: "150px", height: "150px" }} />
+          <p>Image URL: {uploadedUrl}</p>
+        </div>
       )}
     </div>
   );
 };
 
-export default Test;
+export default ImageUpload;

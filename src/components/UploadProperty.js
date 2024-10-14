@@ -1,37 +1,65 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import config from "../configs/config"; // Assuming you have config.js for baseUrl
+import { cloudinaryConfig } from "../configs/cloudinaryConfig"; 
 
 const UploadProperty = () => {
   const [activeSection, setActiveSection] = useState("basicDetails");
-
   const [basicDetails, setBasicDetails] = useState({
     title: "",
     description: "",
     price: "",
-    securityAmount: "",
+    securityDeposit: "", // Corrected to match your backend
     category: "",
   });
-
   const [location, setLocation] = useState({
     address: "",
     city: "",
+    state: "Gujarat", // Default State
+    country: "India", // Default Country
   });
-
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState([]); // For storing local files
   const [categories, setCategories] = useState([]);
   const [selectedCategoryFacilities, setSelectedCategoryFacilities] = useState([]);
   const [facilityValues, setFacilityValues] = useState({});
 
-  // Fetch categories from the backend using axios
+  // Cloudinary configuration using fetch
+  const uploadImageToCloudinary = async (imageFile) => {
+    const formData = new FormData();
+    formData.append("file", imageFile);
+    formData.append("upload_preset", cloudinaryConfig.uploadPreset); // Replace with your Cloudinary upload preset
+    formData.append("cloud_name", cloudinaryConfig.cloudName);
+
+    try {
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        return data.secure_url; // Return the image URL
+      } else {
+        console.error("Failed to upload:", data.error.message);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error uploading image to Cloudinary:", error);
+      return null;
+    }
+  };
+
+  // Fetch categories from the backend using fetch
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${config.baseUrl}/categories`, {
+        const response = await fetch(`${config.baseUrl}/categories`, {
+          method: "GET",
           headers: { "Content-Type": "application/json" },
-          withCredentials: true,
+          credentials: "include", // Equivalent to axios' withCredentials
         });
-        setCategories(response.data);
+        const data = await response.json();
+        setCategories(data);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -77,44 +105,70 @@ const UploadProperty = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Basic Details:", basicDetails);
-    console.log("Location:", location);
-    console.log("Images:", images);
-    console.log("Facilities:", facilityValues);
+    console.log("Submit Button Clicked");
+
+    // Upload images to Cloudinary and get their URLs
+    const imageUploadPromises = images.map((image) => uploadImageToCloudinary(image));
+    const uploadedImageUrls = await Promise.all(imageUploadPromises);
+
+    // Filter out failed uploads
+    const successfulUploads = uploadedImageUrls.filter((url) => url !== null);
 
     // Prepare form data for submission
-    const formData = new FormData();
-    formData.append("title", basicDetails.title);
-    formData.append("description", basicDetails.description);
-    formData.append("price", basicDetails.price);
-    formData.append("securityAmount", basicDetails.securityAmount);
-    formData.append("category", basicDetails.category);
-    formData.append("address", location.address);
-    formData.append("city", location.city);
+    const formData = {
+      title: basicDetails.title,
+      description: basicDetails.description,
+      monthlyRent: basicDetails.price,
+      securityDeposit: basicDetails.securityDeposit,
+      category: basicDetails.category,
+      address: location.address,
+      city: location.city,
+      state: location.state,
+      country: location.country,
+      images: successfulUploads,
+      facilities: Object.entries(facilityValues).map(([facilityId, value]) => ({
+        facility: facilityId,
+        value: value,
+      })),
+      likeCount: 0, // If you want to include likeCount as well
+    };
 
-    // Append each image
-    images.forEach((image, index) => {
-      formData.append(`images[${index}]`, image);
-    });
-
-    // Append facilities
-    Object.entries(facilityValues).forEach(([facilityId, value]) => {
-      formData.append(`facilities[${facilityId}]`, value);
-    });
-
-    // Submit the form using axios
+    // Submit the form using fetch
     try {
-      const response = await axios.post(`${config.baseUrl}/properties`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data", // Ensures file upload is handled properly
-        },
-        withCredentials: true,
+      const response = await fetch(`${config.baseUrl}/properties`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+        credentials: "include", // Equivalent to axios' withCredentials
       });
-      console.log("Property uploaded:", response.data);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Property uploaded:", data);
+
+        setBasicDetails({
+          title: "",
+          description: "",
+          price: "",
+          securityDeposit: "",
+          category: "",
+        });
+        setLocation({
+          address: "",
+          city: "",
+          state: "Gujarat",
+          country: "India",
+        });
+        setImages([]);
+        setFacilityValues({});
+      } else {
+        console.error("Error uploading property:", response.statusText);
+      }
     } catch (error) {
       console.error("Error uploading property:", error);
     }
   };
+
 
   return (
     <div className="container mx-auto p-6">
@@ -128,25 +182,33 @@ const UploadProperty = () => {
 
         <div className="flex space-x-4 mb-6">
           <button
-            className={`px-4 py-2 rounded ${activeSection === "basicDetails" ? "bg-teal-600 text-white" : "bg-gray-300"}`}
+            className={`px-4 py-2 rounded ${
+              activeSection === "basicDetails" ? "bg-teal-600 text-white" : "bg-gray-300"
+            }`}
             onClick={() => setActiveSection("basicDetails")}
           >
             Basic Details
           </button>
           <button
-            className={`px-4 py-2 rounded ${activeSection === "facilities" ? "bg-teal-600 text-white" : "bg-gray-300"}`}
+            className={`px-4 py-2 rounded ${
+              activeSection === "facilities" ? "bg-teal-600 text-white" : "bg-gray-300"
+            }`}
             onClick={() => setActiveSection("facilities")}
           >
             Facilities
           </button>
           <button
-            className={`px-4 py-2 rounded ${activeSection === "location" ? "bg-teal-600 text-white" : "bg-gray-300"}`}
+            className={`px-4 py-2 rounded ${
+              activeSection === "location" ? "bg-teal-600 text-white" : "bg-gray-300"
+            }`}
             onClick={() => setActiveSection("location")}
           >
             Location
           </button>
           <button
-            className={`px-4 py-2 rounded ${activeSection === "images" ? "bg-teal-600 text-white" : "bg-gray-300"}`}
+            className={`px-4 py-2 rounded ${
+              activeSection === "images" ? "bg-teal-600 text-white" : "bg-gray-300"
+            }`}
             onClick={() => setActiveSection("images")}
           >
             Images
@@ -157,129 +219,68 @@ const UploadProperty = () => {
           {/* Basic Details Section */}
           {activeSection === "basicDetails" && (
             <div className="mb-6">
-              {/* Add Basic Details Form Inputs */}
-              <div className="mb-4">
-                <label htmlFor="title" className="block mb-1 text-sm">
-                  Property Title:
-                </label>
-                <input
-                  type="text"
-                  id="title"
-                  name="title"
-                  value={basicDetails.title}
-                  onChange={handleBasicDetailsChange}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  required
-                />
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor="description" className="block mb-1 text-sm">
-                  Description:
-                </label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={basicDetails.description}
-                  onChange={handleBasicDetailsChange}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  required
-                />
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor="price" className="block mb-1 text-sm">
-                  Monthly Rent (₹):
-                </label>
-                <input
-                  type="number"
-                  id="price"
-                  name="price"
-                  value={basicDetails.price}
-                  onChange={handleBasicDetailsChange}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  required
-                />
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor="securityAmount" className="block mb-1 text-sm">
-                  Security Amount (₹): (Optional)
-                </label>
-                <input
-                  type="number"
-                  id="securityAmount"
-                  name="securityAmount"
-                  value={basicDetails.securityAmount}
-                  onChange={handleBasicDetailsChange}
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-
-              {/* Category Dropdown */}
-              <div className="mb-4">
-                <label htmlFor="category" className="block mb-1 text-sm">
-                  Category:
-                </label>
-                <select
-                  id="category"
-                  name="category"
-                  value={basicDetails.category}
-                  onChange={handleBasicDetailsChange}
-                  className="w-full p-2 border border-gray-300 rounded"
-                >
-                  <option value="">Select Category</option>
-                  {categories.map((category) => (
-                    <option key={category._id} value={category._id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <h3 className="text-xl font-semibold mb-4">Basic Details</h3>
+              <input
+                type="text"
+                name="title"
+                value={basicDetails.title}
+                onChange={handleBasicDetailsChange}
+                placeholder="Title"
+                className="block w-full border rounded p-2 mb-4"
+              />
+              <textarea
+                name="description"
+                value={basicDetails.description}
+                onChange={handleBasicDetailsChange}
+                placeholder="Description"
+                className="block w-full border rounded p-2 mb-4"
+              />
+              <input
+                type="number"
+                name="price"
+                value={basicDetails.price}
+                onChange={handleBasicDetailsChange}
+                placeholder="Price"
+                className="block w-full border rounded p-2 mb-4"
+              />
+              <input
+                type="number"
+                name="securityAmount"
+                value={basicDetails.securityAmount}
+                onChange={handleBasicDetailsChange}
+                placeholder="Security Amount"
+                className="block w-full border rounded p-2 mb-4"
+              />
+              <select
+                name="category"
+                value={basicDetails.category}
+                onChange={handleBasicDetailsChange}
+                className="block w-full border rounded p-2 mb-4"
+              >
+                <option value="">Select Category</option>
+                {categories.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
 
           {/* Facilities Section */}
-          {activeSection === "facilities" && selectedCategoryFacilities.length > 0 && (
+          {activeSection === "facilities" && (
             <div className="mb-6">
-              <h4 className="text-lg font-semibold mb-2">Facilities</h4>
+              <h3 className="text-xl font-semibold mb-4">Facilities</h3>
               {selectedCategoryFacilities.map((facility) => (
                 <div key={facility._id} className="mb-4">
-                  <label htmlFor={`facility_${facility._id}`} className="block mb-1 text-sm">
-                    {facility.name}
-                  </label>
-                  {facility.type === "radioButton" ? (
-                    <div>
-                      <label className="mr-4">
-                        <input
-                          type="radio"
-                          name={`facility_${facility._id}`}
-                          value="Yes"
-                          onChange={(e) => handleFacilityChange(e, facility._id)}
-                          className="mr-2"
-                        />
-                        Yes
-                      </label>
-                      <label>
-                        <input
-                          type="radio"
-                          name={`facility_${facility._id}`}
-                          value="No"
-                          onChange={(e) => handleFacilityChange(e, facility._id)}
-                          className="mr-2"
-                        />
-                        No
-                      </label>
-                    </div>
-                  ) : (
-                    <input
-                      type="text"
-                      id={`facility_${facility._id}`}
-                      name={`facility_${facility._id}`}
-                      className="w-full p-2 border border-gray-300 rounded"
-                      onChange={(e) => handleFacilityChange(e, facility._id)}
-                    />
-                  )}
+                  <label className="block mb-2">{facility.name}</label>
+                  <input
+                    type="text"
+                    name={facility._id}
+                    value={facilityValues[facility._id] || ""}
+                    onChange={(e) => handleFacilityChange(e, facility._id)}
+                    className="block w-full border rounded p-2"
+                  />
                 </div>
               ))}
             </div>
@@ -288,35 +289,39 @@ const UploadProperty = () => {
           {/* Location Section */}
           {activeSection === "location" && (
             <div className="mb-6">
-              <h4 className="text-lg font-semibold mb-2">Location</h4>
-              <div className="mb-4">
-                <label htmlFor="address" className="block mb-1 text-sm">
-                  Address:
-                </label>
-                <input
-                  type="text"
-                  id="address"
-                  name="address"
-                  value={location.address}
-                  onChange={handleLocationChange}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="city" className="block mb-1 text-sm">
-                  City:
-                </label>
-                <input
-                  type="text"
-                  id="city"
-                  name="city"
-                  value={location.city}
-                  onChange={handleLocationChange}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  required
-                />
-              </div>
+              <h3 className="text-xl font-semibold mb-4">Location</h3>
+              <input
+                type="text"
+                name="address"
+                value={location.address}
+                onChange={handleLocationChange}
+                placeholder="Address"
+                className="block w-full border rounded p-2 mb-4"
+              />
+              <input
+                type="text"
+                name="city"
+                value={location.city}
+                onChange={handleLocationChange}
+                placeholder="City"
+                className="block w-full border rounded p-2 mb-4"
+              />
+              <input
+                type="text"
+                name="state"
+                value={location.state}
+                onChange={handleLocationChange}
+                placeholder="State"
+                className="block w-full border rounded p-2 mb-4"
+              />
+              <input
+                type="text"
+                name="country"
+                value={location.country}
+                onChange={handleLocationChange}
+                placeholder="Country"
+                className="block w-full border rounded p-2 mb-4"
+              />
             </div>
           )}
 
