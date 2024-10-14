@@ -1,30 +1,121 @@
-import React, { useState } from "react";
+// src/components/Profile.js
+import React, { useState, useEffect, useRef } from "react";
+import config from "../configs/config"; // Ensure you have a config file for base URL
+import { cloudinaryConfig } from "../configs/cloudinaryConfig"; // Cloudinary configuration
 
 const Profile = () => {
-  // Dummy user object created directly inside the component
-  const initialUser = {
-    avatar: "https://avatars.githubusercontent.com/u/112802707?v=4", // Dummy avatar URL
-    name: "John Doe",
-    email: "johndoe@example.com",
-    mobileNumber: "+1234567890",
-  };
-
-  const [user, setUser] = useState(initialUser);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [editedUser, setEditedUser] = useState(user);
+  const [editedUser, setEditedUser] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null); // Reference for the file input
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`${config.baseUrl}/auth/currentuser`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // To ensure cookies are included
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+
+        const data = await response.json();
+        setEditedUser(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
-  const handleSaveClick = () => {
-    setUser(editedUser); // Save the changes to the user object
-    setIsEditing(false); // Exit editing mode
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setImageFile(file);
+    const preview = URL.createObjectURL(file);
+    setPreviewUrl(preview);
+  };
+
+  const handleImageUpload = async () => {
+    if (!imageFile) return null;
+
+    const formData = new FormData();
+    formData.append("file", imageFile);
+    formData.append("upload_preset", cloudinaryConfig.uploadPreset);
+    formData.append("cloud_name", cloudinaryConfig.cloudName);
+
+    try {
+      setUploading(true);
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        return data.secure_url; // Return the uploaded image URL
+      } else {
+        throw new Error(data.error.message || "Failed to upload");
+      }
+    } catch (err) {
+      setError("Failed to upload the image.");
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSaveClick = async () => {
+    try {
+      let imageUrl = editedUser.avatar; // Keep the current avatar if no new image is uploaded
+
+      // If a new image is selected, upload it
+      if (imageFile) {
+        imageUrl = await handleImageUpload();
+        if (!imageUrl) throw new Error("Image upload failed");
+      }
+
+      editedUser.avatar = imageUrl; // Update the avatar URL in the edited user object
+      const response = await fetch(`${config.baseUrl}/users/${editedUser._id}`, {
+        method: "PUT",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // To ensure cookies are included
+        body: JSON.stringify({ ...editedUser }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save changes");
+      }
+
+      const data = await response.json();
+      setEditedUser(data); // Update the local state with the edited user data
+      setIsEditing(false);
+      setError("");
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const handleCancelClick = () => {
-    setEditedUser(user); // Revert changes
-    setIsEditing(false); // Exit editing mode
+    setIsEditing(false);
+    setPreviewUrl(null);
+    setImageFile(null);
   };
 
   const handleChange = (e) => {
@@ -35,13 +126,34 @@ const Profile = () => {
     }));
   };
 
+  const handleProfileClick = () => {
+    // Trigger the file input click when profile picture is clicked
+    fileInputRef.current.click();
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div style={{ color: "red" }}>Error: {error}</div>;
+  }
+
   return (
     <div className="bg-white p-8 shadow-lg rounded-lg max-w-md mx-auto mt-10">
       <div className="flex items-center justify-center mb-4">
         <img
-          src={user.avatar}
+          src={previewUrl || editedUser.avatar}
           alt="User Avatar"
-          className="w-32 h-32 rounded-full border-4 border-teal-500 shadow-md"
+          className="w-32 h-32 rounded-full border-4 border-teal-500 shadow-md cursor-pointer"
+          onClick={handleProfileClick} // Trigger file input when image is clicked
+        />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden" // Hide the file input
+          ref={fileInputRef} // Reference to the file input
         />
       </div>
       <div className="text-center mb-6">
@@ -68,38 +180,33 @@ const Profile = () => {
               onChange={handleChange}
               className="text-gray-600 mb-1 border-b-2 border-gray-300 text-center"
             />
+            <div className="flex justify-around mt-4">
+              <button
+                onClick={handleSaveClick}
+                className="px-4 py-2 bg-teal-600 text-white rounded-md"
+              >
+                {uploading ? "Saving..." : "Save"}
+              </button>
+              <button
+                onClick={handleCancelClick}
+                className="px-4 py-2 bg-red-600 text-white rounded-md"
+              >
+                Cancel
+              </button>
+            </div>
           </>
         ) : (
           <>
-            <h2 className="text-2xl font-semibold mb-2">{user.name}</h2>
-            <p className="text-gray-600 mb-1">{user.email}</p>
-            <p className="text-gray-600 mb-1">{user.mobileNumber}</p>
-          </>
-        )}
-      </div>
-      <div className="flex justify-center">
-        {isEditing ? (
-          <>
+            <h1 className="text-xl font-semibold mb-2">{editedUser.name}</h1>
+            <p className="text-gray-600 mb-1">Email: {editedUser.email}</p>
+            <p className="text-gray-600 mb-1">Mobile: {editedUser.mobileNumber}</p>
             <button
-              className="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded mr-2"
-              onClick={handleSaveClick}
+              onClick={handleEditClick}
+              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
             >
-              Save
-            </button>
-            <button
-              className="bg-gray-300 hover:bg-gray-400 text-black font-semibold py-2 px-4 rounded"
-              onClick={handleCancelClick}
-            >
-              Cancel
+              Edit Profile
             </button>
           </>
-        ) : (
-          <button
-            className="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded"
-            onClick={handleEditClick}
-          >
-            Edit Profile
-          </button>
         )}
       </div>
     </div>
