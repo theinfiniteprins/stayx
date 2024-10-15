@@ -3,8 +3,7 @@ import Slider from "react-slick";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import config from "../configs/config";
-import Spinner from "./Spinner"; // Loading spinner
-import Skeleton from "./Skeleton"; // Skeleton loader
+import Spinner from "./SliderSpinner";
 
 const PreviousArrow = ({ className, style, onClick }) => (
   <div className={`${className} custom-arrow-left`} style={{ ...style }} onClick={onClick}></div>

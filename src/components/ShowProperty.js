@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import config from "../configs/config";
+import Spinner from "./Spinner"; // Import Spinner component
 
 const ShowProperty = () => {
   const { id } = useParams(); // Get the ID from the URL
@@ -11,6 +12,7 @@ const ShowProperty = () => {
   const [facilitiesInfo, setFacilitiesInfo] = useState([]);
   const [liked, setLiked] = useState(false); // Track if the current user has liked the property
   const [likeCount, setLikeCount] = useState(0); // Track like count
+  const [isLoadingLike, setIsLoadingLike] = useState(false); // Loading state for the like button
 
   useEffect(() => {
     const fetchProperty = async () => {
@@ -108,6 +110,7 @@ const ShowProperty = () => {
   }, [id]);
 
   const handleLikeToggle = async () => {
+    setIsLoadingLike(true); // Set loading state to true
     try {
       if (liked) {
         // Dislike the property
@@ -140,11 +143,17 @@ const ShowProperty = () => {
       setLiked(!liked); // Toggle the liked state
     } catch (error) {
       console.error("Error liking/disliking the property:", error);
+    } finally {
+      setIsLoadingLike(false); // Set loading state to false after API call
     }
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="max-w-6xl mx-auto p-4">
+        <Spinner />
+      </div>
+    );
   }
 
   if (!property) {
@@ -184,12 +193,17 @@ const ShowProperty = () => {
                 className={`w-12 h-12 rounded-full flex items-center justify-center transition-transform transform ${
                   liked ? "bg-pink-500 text-white" : "bg-gray-200 text-gray-700"
                 } shadow-md hover:scale-110`}
+                disabled={isLoadingLike} // Disable the button while loading
               >
-                <i
-                  className={`fas fa-heart text-xl ${
-                    liked ? "text-white animate-pulse" : "text-gray-500"
-                  } transition-all`}
-                />
+                {isLoadingLike ? (
+                  <i className="fas fa-spinner fa-spin text-lg text-white" />
+                ) : (
+                  <i
+                    className={`fas fa-heart text-xl ${
+                      liked ? "text-white animate-pulse" : "text-gray-500"
+                    } transition-all`}
+                  />
+                )}
               </button>
 
               {/* Like Count Below the Heart */}
