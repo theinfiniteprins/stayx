@@ -1,10 +1,9 @@
-// PropertyCard.jsx
 import React from "react";
 
 const PropertyCard = ({ property, onClick }) => {
   return (
     <div
-      className="max-w-md mx-auto bg-white border border-gray-300 shadow-lg rounded-lg overflow-hidden p-4 m-4 hover:shadow-xl transition-shadow duration-300"
+      className="w-96 bg-white border border-gray-300 shadow-lg rounded-lg overflow-hidden p-4 m-4 hover:shadow-xl transition-shadow duration-300" // Increased width to w-96
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
@@ -13,7 +12,8 @@ const PropertyCard = ({ property, onClick }) => {
         <img
           src={property.image}
           alt={property.title}
-          className="w-full h-48 object-cover rounded-t-lg"
+          className="w-full h-48 object-cover rounded-t-lg" // Fixed height
+          style={{ objectFit: "cover", height: "200px", width: "100%" }} // Ensure fixed size for image
         />
         <div className="absolute top-0 left-0 bg-gradient-to-r from-teal-500 via-green-500 to-teal-500 text-white text-lg px-5 py-2 rounded-br-lg font-semibold shadow-md">
           ₹{property.monthlyRent}/month
@@ -33,12 +33,12 @@ const PropertyCard = ({ property, onClick }) => {
         <div className="flex justify-between items-center">
           <div className="text-sm text-gray-600 space-y-1">
             {/* Use flex to display facilities side by side */}
-            <div className="flex space-x-4"> {/* Add flex and space between items */}
+            <div className="flex space-x-4">
               {property.facilities.slice(0, 2).map((facility, index) => (
-                <p className="flex items-center text-lg font-semibold mr-5" key={index}> {/* Use index as key */}
-                <i className={`fas ${index === 0 ? 'fa-bed' : 'fa-bath'} text-teal-500 mr-3 text-2xl`}></i> {/* Larger icon with more space */}
-                {facility.value} {/* Print the facility value */}
-              </p>              
+                <p className="flex items-center text-lg font-semibold mr-5" key={index}>
+                  <i className={`fas ${index === 0 ? 'fa-bed' : 'fa-bath'} text-teal-500 mr-3 text-2xl`}></i>
+                  {facility.value}
+                </p>
               ))}
             </div>
           </div>

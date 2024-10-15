@@ -1,28 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // To get the id from the URL
+import { useParams } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
-import axios from "axios";
 
 const ShowProperty = () => {
   const { id } = useParams(); // Get the ID from the URL
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [facilitiesInfo, setFacilitiesInfo] = useState([]);
+  const [liked, setLiked] = useState(false); // Track if the current user has liked the property
+  const [likeCount, setLikeCount] = useState(0); // Track like count
 
   useEffect(() => {
     const fetchProperty = async () => {
       try {
-        const response = await axios.get(
+        const response = await fetch(
           `https://rent-x-backend-nine.vercel.app/properties/${id}`,
           {
-            withCredentials: true,
+            method: "GET",
             headers: {
               "Content-Type": "application/json",
             },
+            credentials: "include", // Send cookies with the request
           }
         );
-        setProperty(response.data); // Set fetched data as property
+        const data = await response.json();
+        setProperty(data); // Set fetched data as property
+        setLikeCount(data.likeCount || 0); // Set initial like count
         setLoading(false);
       } catch (error) {
         console.error("Error fetching property data:", error);
@@ -37,26 +41,30 @@ const ShowProperty = () => {
     const fetchFacilityDetails = async () => {
       if (property && property.facilities.length > 0) {
         const promises = property.facilities.map((facility) =>
-          axios.get(
+          fetch(
             `https://rent-x-backend-nine.vercel.app/facilities/${facility.facility}`,
             {
-              withCredentials: true,
+              method: "GET",
               headers: {
                 "Content-Type": "application/json",
               },
+              credentials: "include", // Send cookies with the request
             }
           )
         );
 
         try {
           const facilitiesData = await Promise.all(promises);
-          const facilitiesWithDetails = facilitiesData.map(
-            (response, index) => ({
-              ...response.data, // Facility details (name, iconImage)
+          const facilitiesWithDetails = await Promise.all(
+            facilitiesData.map((response) => response.json())
+          );
+          const facilitiesWithDetailsMapped = facilitiesWithDetails.map(
+            (facility, index) => ({
+              ...facility, // Facility details (name, iconImage)
               value: property.facilities[index].value, // Corresponding value from property.facilities
             })
           );
-          setFacilitiesInfo(facilitiesWithDetails);
+          setFacilitiesInfo(facilitiesWithDetailsMapped);
         } catch (error) {
           console.error("Error fetching facility details:", error);
         }
@@ -67,6 +75,72 @@ const ShowProperty = () => {
       fetchFacilityDetails();
     }
   }, [property]);
+
+  useEffect(() => {
+    const checkIfPropertyIsLiked = async () => {
+      try {
+        const response = await fetch(
+          "https://rent-x-backend-nine.vercel.app/auth/currentuser",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include", // Send cookies with the request
+          }
+        );
+        const currentUser = await response.json();
+
+        if (currentUser.favouriteProperties) {
+          const { favouriteProperties } = currentUser;
+          // Check if the current property ID is in the user's favouriteProperties list
+          if (favouriteProperties.some((fav) => fav === id)) {
+            setLiked(true);
+          }
+        }
+      } catch (error) {
+        console.error("Error checking if property is liked:", error);
+      }
+    };
+
+    checkIfPropertyIsLiked();
+  }, [id]);
+
+  const handleLikeToggle = async () => {
+    try {
+      if (liked) {
+        // Dislike the property
+        await fetch(
+          `https://rent-x-backend-nine.vercel.app/properties/${id}/dislike`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include", // Send cookies with the request
+          }
+        );
+        setLikeCount(likeCount - 1);
+      } else {
+        // Like the property
+        await fetch(
+          `https://rent-x-backend-nine.vercel.app/properties/${id}/like`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include", // Send cookies with the request
+          }
+        );
+        setLikeCount(likeCount + 1);
+      }
+
+      setLiked(!liked); // Toggle the liked state
+    } catch (error) {
+      console.error("Error liking/disliking the property:", error);
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -84,7 +158,6 @@ const ShowProperty = () => {
 
   return (
     <div className="max-w-6xl mx-auto p-4">
-      {/* Main container to split the layout */}
       <div className="flex flex-col lg:flex-row">
         {/* Left Side: Image Slider */}
         <div className="w-full lg:w-3/5 h-[400px]">
@@ -99,9 +172,30 @@ const ShowProperty = () => {
 
         {/* Right Side: Property Details */}
         <div className="w-full lg:w-2/5 lg:pl-8 mt-6 lg:mt-0">
-          {/* Property Title */}
-          <div className="mb-4">
+          <div className="flex items-center justify-between mb-4">
+            {/* Property Title */}
             <h2 className="text-3xl font-bold">{property.title}</h2>
+
+            {/* Like Button UI */}
+            <div className="relative flex flex-col items-center">
+              <button
+                onClick={handleLikeToggle}
+                className={`w-12 h-12 rounded-full flex items-center justify-center transition-transform transform ${
+                  liked ? "bg-pink-500 text-white" : "bg-gray-200 text-gray-700"
+                } shadow-md hover:scale-110`}
+              >
+                <i
+                  className={`fas fa-heart text-xl ${
+                    liked ? "text-white animate-pulse" : "text-gray-500"
+                  } transition-all`}
+                />
+              </button>
+
+              {/* Like Count Below the Heart */}
+              <span className="text-lg font-bold text-teal-600 mt-2">
+                {likeCount}
+              </span>
+            </div>
           </div>
 
           {/* Property Category */}
@@ -149,7 +243,6 @@ const ShowProperty = () => {
                       className="w-6 h-6 mr-2"
                     />
                     <span className="font-semibold">{facility.name}</span>
-
                     <span className="ml-2">{facility.value}</span>
                   </div>
                 ))}
