@@ -10,6 +10,7 @@ import Profile from './components/profile';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsAndConditions from './components/TermsAndConditions';
 import Test from './components/test';
+import FavouriteProperties from './components/FavouriteProperty';
 import './styles.css';
 
 const App = () => {
@@ -26,6 +27,7 @@ const App = () => {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="/test" element={<Test />} />
+        <Route path="/favourites" element={<FavouriteProperties />} />
       </Routes>
     </Router>
   );
