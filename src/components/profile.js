@@ -1,7 +1,7 @@
 // src/components/Profile.js
 import React, { useState, useEffect, useRef } from "react";
 import config from "../configs/config"; // Ensure you have a config file for base URL
-import { cloudinaryConfig } from "../configs/cloudinaryConfig"; // Cloudinary configuration
+import { cloudinaryConfigProfile } from "../configs/cloudinaryConfigProfile"; // Cloudinary configuration
 
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -55,12 +55,12 @@ const Profile = () => {
 
     const formData = new FormData();
     formData.append("file", imageFile);
-    formData.append("upload_preset", cloudinaryConfig.uploadPreset);
-    formData.append("cloud_name", cloudinaryConfig.cloudName);
+    formData.append("upload_preset", cloudinaryConfigProfile.uploadPreset);
+    formData.append("cloud_name", cloudinaryConfigProfile.cloudName);
 
     try {
       setUploading(true);
-      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`, {
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryConfigProfile.cloudName}/image/upload`, {
         method: "POST",
         body: formData,
       });
