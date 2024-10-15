@@ -3,16 +3,16 @@ import { useParams } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import config from "../configs/config";
-import Spinner from "./Spinner"; // Import Spinner component
+import Spinner from "./Spinner"; 
 
 const ShowProperty = () => {
   const { id } = useParams(); // Get the ID from the URL
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [facilitiesInfo, setFacilitiesInfo] = useState([]);
-  const [liked, setLiked] = useState(false); // Track if the current user has liked the property
-  const [likeCount, setLikeCount] = useState(0); // Track like count
-  const [isLoadingLike, setIsLoadingLike] = useState(false); // Loading state for the like button
+  const [liked, setLiked] = useState(false); 
+  const [likeCount, setLikeCount] = useState(0);
+  const [isLoadingLike, setIsLoadingLike] = useState(false);
 
   useEffect(() => {
     const fetchProperty = async () => {
@@ -28,8 +28,8 @@ const ShowProperty = () => {
           }
         );
         const data = await response.json();
-        setProperty(data); // Set fetched data as property
-        setLikeCount(data.likeCount || 0); // Set initial like count
+        setProperty(data); 
+        setLikeCount(data.likeCount || 0); 
         setLoading(false);
       } catch (error) {
         console.error("Error fetching property data:", error);
@@ -110,7 +110,7 @@ const ShowProperty = () => {
   }, [id]);
 
   const handleLikeToggle = async () => {
-    setIsLoadingLike(true); // Set loading state to true
+    setIsLoadingLike(true); 
     try {
       if (liked) {
         // Dislike the property
@@ -140,11 +140,11 @@ const ShowProperty = () => {
         setLikeCount(likeCount + 1);
       }
 
-      setLiked(!liked); // Toggle the liked state
+      setLiked(!liked);
     } catch (error) {
       console.error("Error liking/disliking the property:", error);
     } finally {
-      setIsLoadingLike(false); // Set loading state to false after API call
+      setIsLoadingLike(false); 
     }
   };
 
