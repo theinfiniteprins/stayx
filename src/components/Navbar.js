@@ -52,6 +52,10 @@ const Navbar = () => {
     navigate('/favourites');
   };
 
+  const handleMyPropertiesClick = () => {
+    navigate('/myproperties');
+  };
+
   const handlePrivacyPolicyClick = () => {
     navigate('/privacy-policy');
   };
@@ -111,7 +115,7 @@ const Navbar = () => {
             {isAuthenticated ? (
               <>
                 <li onClick={handleProfileClick}><FaUser /> Profile</li>
-                <li><FaHome /> My Properties</li>
+                <li onClick={handleMyPropertiesClick}><FaHome /> My Properties</li>
                 <li onClick={handleFavourtiesClick}><FaHeart /> Favorites</li>
                 <li onClick={handleTermsAndConditionsClick}><FaFileAlt /> Terms and Conditions</li>
                 <li onClick={handlePrivacyPolicyClick}><FaLock /> Privacy Policy</li>
