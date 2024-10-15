@@ -1,110 +1,20 @@
+// Home.js
 import React, { useState } from "react";
-import Slider from "react-slick";
-import { useNavigate } from "react-router-dom";  // Import useNavigate
-import "../styles.css";
+import PropertySlider from "./PropertySlider"; // Import PropertySlider
 import MostLiked from "./most_like";
-
-// Dummy data for the slider
-const sliderData = [
-  {
-    id: 1,
-    image: "/images/property1.jpg",
-    title: "Cozy Apartment",
-    city: "Nadiad",
-    price: "12000",
-  },
-  {
-    id: 2,
-    image: "/images/property2.png",
-    title: "Spacious Studio",
-    city: "Gujarat",
-    price: "15000",
-  },
-  {
-    id: 3,
-    image: "/images/property3.jpg",
-    title: "Modern Flat",
-    city: "Ahmedabad",
-    price: "18000",
-  },
-];
-
-// Custom arrow components
-const PreviousArrow = ({ className, style, onClick }) => (
-  <div
-    className={`${className} custom-arrow-left`}
-    style={{ ...style }}
-    onClick={onClick}
-  >
-  </div>
-);
-
-const NextArrow = ({ className, style, onClick }) => (
-  <div
-    className={`${className} custom-arrow-right`}
-    style={{ ...style }}
-    onClick={onClick}
-  >
-  </div>
-);
+import "../styles.css";
 
 const Home = () => {
-  const navigate = useNavigate();  // Initialize useNavigate
-
   const [city, setCity] = useState("Any");
   const [category, setCategory] = useState("Any");
   const [bedrooms, setBedrooms] = useState("Any");
   const [priceRange, setPriceRange] = useState(50000);
   const [sortOrder, setSortOrder] = useState("Low to High");
 
-  // Slider settings
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 4000,
-    prevArrow: <PreviousArrow />,
-    nextArrow: <NextArrow />,
-  };
-
-  // Function to navigate to the property page
-  const handleViewProperty = (id) => {
-    navigate(`/property/${id}`);
-  };
-
   return (
     <div className="home-container">
-      <div className="slider-container">
-        <Slider {...settings}>
-          {sliderData.map((property) => (
-            <div
-              className="slider-item"
-              key={property.id}
-              onClick={() => handleViewProperty(property.id)} // Navigate when slider item is clicked
-            >
-              <img
-                src={property.image}
-                alt={property.title}
-                className="slider-image"
-              />
-              <div className="property-details">
-                <h3>{property.title}</h3>
-                <p>{property.city}</p>
-                <p>Price: ₹{property.price}</p>
-                <a
-                  className="view-property-button"
-                  onClick={() => handleViewProperty(property.id)} // Navigate when view button is clicked
-                >
-                  <i className="fa fa-eye" aria-hidden="true"></i> View Property
-                </a>
-              </div>
-            </div>
-          ))}
-        </Slider>
-      </div>
+      {/* Call the PropertySlider component */}
+      <PropertySlider />
 
       {/* Search and Filter Box */}
       <div className="search-filter-container">
