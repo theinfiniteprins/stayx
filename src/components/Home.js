@@ -1,6 +1,6 @@
 import React from "react";
 import PropertySlider from "./PropertySlider";
-import MostLiked from "./most_like";
+import MostLiked from "./MostLiked";
 import PropertySearchAndFilter from "./PropertySearchAndFilter";  // Import the new component
 import "../styles.css";
 

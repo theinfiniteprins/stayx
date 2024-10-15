@@ -3,6 +3,8 @@ import Slider from "react-slick";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import config from "../configs/config";
+import Spinner from "./Spinner"; // Loading spinner
+import Skeleton from "./Skeleton"; // Skeleton loader
 
 const PreviousArrow = ({ className, style, onClick }) => (
   <div className={`${className} custom-arrow-left`} style={{ ...style }} onClick={onClick}></div>
@@ -15,16 +17,19 @@ const NextArrow = ({ className, style, onClick }) => (
 const PropertySlider = () => {
   const navigate = useNavigate();
   const [sliderData, setSliderData] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
 
   // Fetch slider data from the API
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${config.baseUrl}/slider/`);
-        const filteredData = response.data.filter(property => property.isActive); // Only show active properties
+        const filteredData = response.data.filter(property => property.isActive);
         setSliderData(filteredData);
       } catch (error) {
         console.error("Error fetching slider data:", error);
+      } finally {
+        setLoading(false); // Set loading to false after fetching
       }
     };
     fetchData();
@@ -32,13 +37,13 @@ const PropertySlider = () => {
 
   const settings = {
     dots: true,
-    infinite: sliderData.length > 1,  // Disable infinite scrolling if there's only one property
+    infinite: sliderData.length > 1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: sliderData.length > 1,  // Disable autoplay if there's only one property
+    autoplay: sliderData.length > 1,
     autoplaySpeed: 4000,
-    prevArrow: sliderData.length > 1 ? <PreviousArrow /> : null,  // Hide arrows if only one property
+    prevArrow: sliderData.length > 1 ? <PreviousArrow /> : null,
     nextArrow: sliderData.length > 1 ? <NextArrow /> : null,
   };
 
@@ -48,32 +53,32 @@ const PropertySlider = () => {
 
   return (
     <div className="slider-container">
-      <Slider {...settings}>
-        {sliderData.map(({ _id, property }) => (
-          <div
-            className="slider-item"
-            key={_id}
-            onClick={() => handleViewProperty(property._id)}
-          >
-            <img
-              src={property.images[0]} // Assuming the first image in the array
-              alt={property.title}
-              className="slider-image"
-            />
-            <div className="property-details">
-              <h3>{property.title}</h3>
-              <p>{property.city}, {property.state}</p>
-              <p>Price: ₹{property.monthlyRent}</p>
-              <a
-                className="view-property-button"
-                onClick={() => handleViewProperty(property._id)}
-              >
-                <i className="fa fa-eye" aria-hidden="true"></i> View Property
-              </a>
+      {loading ? (
+        <div className="loading-container">
+          <Spinner /> {/* Show spinner while loading */}
+        </div>
+      ) : (
+        <Slider {...settings}>
+          {sliderData.map(({ _id, property }) => (
+            <div
+              className="slider-item"
+              key={_id}
+              onClick={() => handleViewProperty(property._id)}
+            >
+              <img
+                src={property.images[0]} 
+                alt={property.title}
+                className="slider-image"
+              />
+              <div className="property-details">
+                <h3>{property.title}</h3>
+                <p>{property.city}, {property.state}</p>
+                <p>Price: ₹{property.monthlyRent}</p>
+              </div>
             </div>
-          </div>
-        ))}
-      </Slider>
+          ))}
+        </Slider>
+      )}
     </div>
   );
 };

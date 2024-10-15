@@ -4,6 +4,7 @@ import config from "../configs/config";
 const PropertyCard = ({ property, onClick }) => {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(property.likeCount);
+  const [isLoading, setIsLoading] = useState(false); // Loading state for the like button
 
   useEffect(() => {
     // Check if the property is liked when the component mounts
@@ -35,6 +36,7 @@ const PropertyCard = ({ property, onClick }) => {
   }, [property._id]);
 
   const handleLikeToggle = async () => {
+    setIsLoading(true); // Set loading state to true
     try {
       if (liked) {
         // Dislike the property
@@ -67,6 +69,8 @@ const PropertyCard = ({ property, onClick }) => {
       setLiked(!liked); // Toggle the liked state
     } catch (error) {
       console.error("Error liking/disliking the property:", error);
+    } finally {
+      setIsLoading(false); // Set loading state to false after API call
     }
   };
 
@@ -97,12 +101,13 @@ const PropertyCard = ({ property, onClick }) => {
           className={`absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center transition-transform transform ${
             liked ? "bg-pink-500 text-white" : "bg-gray-200 text-gray-700"
           } shadow-md hover:scale-110`}
+          disabled={isLoading} // Disable the button while loading
         >
-          <i
-            className={`fas fa-heart text-lg ${
-              liked ? "text-white" : "text-gray-500"
-            }`}
-          />
+          {isLoading ? (
+            <i className="fas fa-spinner fa-spin text-lg text-white" />
+          ) : (
+            <i className={`fas fa-heart text-lg ${liked ? "text-white" : "text-gray-500"}`} />
+          )}
         </button>
       </div>
 
