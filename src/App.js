@@ -3,10 +3,10 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import UploadProperty from './components/UploadProperty';
-import ShowProperty from './components/ShowProperty';
+import ShowProperty from './components/ShowProperty'
 import Login from './components/Login';
 import Register from './components/Register';
-import Profile from './components/profile';
+import Profile from './components/Profile';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsAndConditions from './components/TermsAndConditions';
 import FavouriteProperties from './components/FavouriteProperty';

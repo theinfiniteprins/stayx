@@ -1,99 +1,113 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaEdit, FaTrashAlt, FaHeart } from "react-icons/fa";
-import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import Spinner from "./Spinner";
+import ConfirmationModal from "./ConfirmationModal";
 import config from "../configs/config";
+import axios from "axios";
 
 const MyProperties = () => {
   const [properties, setProperties] = useState([]);
-  const [userId, setUserId] = useState(null); // State to store the current user's ID
-  const navigate = useNavigate(); // useNavigate hook from React Router
+  const [userId, setUserId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [propertyToDelete, setPropertyToDelete] = useState(null);
+  const navigate = useNavigate();
 
   // Fetch the current user's details
   useEffect(() => {
     axios
-      .get(`${config.baseUrl}/auth/currentuser`, { withCredentials: true }) // API call to get current user with credentials
+      .get(`${config.baseUrl}/auth/currentuser`, { withCredentials: true })
       .then((response) => {
-        const currentUser = response.data; // Assuming user data contains ID
-        setUserId(currentUser._id); // Store the user's ID
+        const currentUser = response.data;
+        setUserId(currentUser._id);
       })
       .catch((error) => {
         console.error("Error fetching current user:", error);
       });
   }, []);
 
-  // Fetch and filter properties based on the current user's ID
+  // Fetch properties for the current user directly
   useEffect(() => {
     if (userId) {
+      setLoading(true);
       axios
-        .get(`${config.baseUrl}/properties/`, { withCredentials: true }) // Include credentials in the property request as well
+        .get(`${config.baseUrl}/users/properties/${userId}`, {
+          withCredentials: true,
+        })
         .then((response) => {
-          // Filter properties where userRef matches the current userId
-          const userProperties = response.data.filter(
-            (property) => property.userRef === userId
-          );
-          setProperties(userProperties);
+          setProperties(response.data); // Set properties directly from response
         })
         .catch((error) => {
           console.error("Error fetching properties:", error);
+        })
+        .finally(() => {
+          setLoading(false); // Stop loading
         });
     }
   }, [userId]);
 
   // Handle row click to navigate to the property page
   const handleRowClick = (propertyId) => {
-    navigate(`/property/${propertyId}`); // Navigate to the property details page
+    navigate(`/property/${propertyId}`);
   };
 
   // Handle delete action
-  const handleDelete = async (propertyId) => {
+  const handleDelete = async () => {
+    setIsModalOpen(false);
+    setLoading(true);
     try {
-      // Delete the property
-      await axios.delete(`${config.baseUrl}/properties/${propertyId}`, {
-        withCredentials: true, // Make sure to include credentials
+      await axios.delete(`${config.baseUrl}/properties/${propertyToDelete}`, {
+        withCredentials: true,
       });
-
-      // Delete from slider (if needed)
-      await axios.delete(`${config.baseUrl}/slider/${propertyId}`, {
-        withCredentials: true, // Include credentials
-      });
-
-      // Filter out the deleted property from the state
-      setProperties(properties.filter((property) => property._id !== propertyId));
+      setProperties(
+        properties.filter((property) => property._id !== propertyToDelete)
+      );
     } catch (error) {
-      console.error("Error deleting property or from slider:", error);
+      console.error("Error deleting property or images:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   // Handle edit action
   const handleEdit = (propertyId) => {
-    navigate(`/edit/${propertyId}`); // Navigate to the edit page with the property ID
+    navigate(`/edit/${propertyId}`);
   };
 
   return (
-    <div className="container mx-auto mt-5">
+    <div className="container mx-auto mt-5 relative">
       <h1 className="text-2xl font-bold m-4">My Properties</h1>
       <div className="grid grid-cols-1 gap-6">
-        {properties.length > 0 ? (
+        {loading || properties.length <= 0 ? ( // Show loading spinner if loading
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-50 z-50">
+            <Spinner />
+          </div>
+        ) : (
+          // Show properties if not loading and properties exist
           properties.map((property) => (
             <div
               key={property._id}
-              className="flex items-center bg-white p-4 rounded-lg shadow-lg cursor-pointer" // Add cursor-pointer for clickable row
-              onClick={() => handleRowClick(property._id)} // Redirect on row click
+              className="flex items-center bg-white p-4 rounded-lg shadow-lg cursor-pointer"
+              onClick={() => handleRowClick(property._id)}
             >
               {/* Property Image */}
               <img
                 src={property.images[0]}
                 alt={property.title}
-                className="w-60 h-32 rounded-lg mr-4" // Increased width and height
+                className="w-60 h-32 rounded-lg mr-4"
               />
               {/* Property Details */}
               <div className="flex-1">
                 <h2 className="text-lg font-semibold">{property.title}</h2>
-                <p className="text-gray-600 mt-1">Rent: ₹{property.monthlyRent}</p>
+                <p className="text-gray-600 mt-1">
+                  Rent: ₹{property.monthlyRent}
+                </p>
               </div>
               {/* Category */}
-              <div className="flex-1 text-gray-700 text-xl">{property.category.name}</div>
+              <div className="flex-1 text-gray-700 text-xl">
+                {property.category.name}
+              </div>
               {/* Like Count beside Heart Icon */}
               <div className="flex-1 flex items-center justify-center">
                 <FaHeart
@@ -106,28 +120,33 @@ const MyProperties = () => {
               {/* Edit & Delete Icons */}
               <div className="flex items-center space-x-4 ml-4">
                 <FaEdit
-                  className="text-blue-500 cursor-pointer"
+                  className="text-blue-500 cursor-pointer hover:text-blue-700 transition-colors"
                   size={28}
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevent row click when icon is clicked
-                    handleEdit(property._id); // Trigger edit action
+                    e.stopPropagation();
+                    handleEdit(property._id);
                   }}
                 />
                 <FaTrashAlt
-                  className="text-red-500 cursor-pointer"
+                  className="text-red-500 cursor-pointer hover:text-red-700 transition-colors"
                   size={28}
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevent row click when icon is clicked
-                    handleDelete(property._id); // Trigger delete action
+                    e.stopPropagation();
+                    setPropertyToDelete(property._id); // Set property ID to delete
+                    setIsModalOpen(true); // Open modal
                   }}
                 />
               </div>
             </div>
           ))
-        ) : (
-          <p>No properties found for the current user.</p>
         )}
       </div>
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 };

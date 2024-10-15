@@ -5,7 +5,6 @@
 /.pnp
 .pnp.js
 /src/configs/cloudinaryConfig.js
-/src/configs/cloudinaryConfigProfile.js
 
 # testing
 /coverage

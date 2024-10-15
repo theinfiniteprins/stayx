@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
+import Spinner from "./Spinner";
 import config from "../configs/config";
-import { cloudinaryConfig } from "../configs/cloudinaryConfig";
+import { cloudinaryConfigProperty } from "../configs/cloudinaryConfig";
 
 const UploadProperty = () => {
   const [activeSection, setActiveSection] = useState("basicDetails");
@@ -18,22 +19,24 @@ const UploadProperty = () => {
     state: "Gujarat",
     country: "India",
   });
-  const [images, setImages] = useState([]); 
+  const [images, setImages] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [selectedCategoryFacilities, setSelectedCategoryFacilities] = useState([]);
+  const [selectedCategoryFacilities, setSelectedCategoryFacilities] = useState(
+    []
+  );
   const [facilityValues, setFacilityValues] = useState({});
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [loading, setLoading] = useState(false); // Added loading state
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const uploadImageToCloudinary = async (imageFile) => {
     const formData = new FormData();
     formData.append("file", imageFile);
-    formData.append("upload_preset", cloudinaryConfig.uploadPreset);
-    formData.append("cloud_name", cloudinaryConfig.cloudName);
+    formData.append("upload_preset", cloudinaryConfigProperty.uploadPreset);
+    formData.append("cloud_name", cloudinaryConfigProperty.cloudName);
     try {
       const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`,
+        `https://api.cloudinary.com/v1_1/${cloudinaryConfigProperty.cloudName}/image/upload`,
         { method: "POST", body: formData }
       );
       const data = await response.json();
@@ -68,7 +71,9 @@ const UploadProperty = () => {
       const selectedCategory = categories.find(
         (cat) => cat._id === basicDetails.category
       );
-      setSelectedCategoryFacilities(selectedCategory ? selectedCategory.facilities : []);
+      setSelectedCategoryFacilities(
+        selectedCategory ? selectedCategory.facilities : []
+      );
       setFacilityValues({});
     } else {
       setSelectedCategoryFacilities([]);
@@ -92,7 +97,8 @@ const UploadProperty = () => {
 
   const handleFacilityChange = (e, facilityId, type) => {
     const { value } = e.target;
-    const updatedValue = type === "radio" ? (value === "true" ? true : false) : value;
+    const updatedValue =
+      type === "radio" ? (value === "true" ? true : false) : value;
     setFacilityValues({ ...facilityValues, [facilityId]: updatedValue });
   };
 
@@ -102,38 +108,42 @@ const UploadProperty = () => {
     );
   };
 
-// Validation before submission
-const validateForm = () => {
-  const { title, description, price, category } = basicDetails;
-  const { address, city, state, country } = location;
+  // Validation before submission
+  const validateForm = () => {
+    const { title, description, price, category } = basicDetails;
+    const { address, city, state, country } = location;
 
-  // Validate basic details
-  const isBasicDetailsValid = 
-    title.trim() !== "" &&
-    description.trim() !== "" &&
-    price.trim() !== "" &&
-    category.trim() !== "";
+    // Validate basic details
+    const isBasicDetailsValid =
+      title.trim() !== "" &&
+      description.trim() !== "" &&
+      price.trim() !== "" &&
+      category.trim() !== "";
 
-  // Validate location
-  const isLocationValid =
-    address.trim() !== "" &&
-    city.trim() !== "" &&
-    state.trim() !== "" &&
-    country.trim() !== "";
+    // Validate location
+    const isLocationValid =
+      address.trim() !== "" &&
+      city.trim() !== "" &&
+      state.trim() !== "" &&
+      country.trim() !== "";
 
-  // Validate facilities (ensure all facilities have values)
-  const isFacilitiesValid = selectedCategoryFacilities.every((facility) => {
-    const value = facilityValues[facility._id];
-    // Check for existence and ensure it's not empty
-    return value !== undefined && value !== "";
-  });
+    // Validate facilities (ensure all facilities have values)
+    const isFacilitiesValid = selectedCategoryFacilities.every((facility) => {
+      const value = facilityValues[facility._id];
+      // Check for existence and ensure it's not empty
+      return value !== undefined && value !== "";
+    });
 
-  // Validate images (at least one image should be uploaded)
-  const isImagesValid = images.length > 0;
+    // Validate images (at least one image should be uploaded)
+    const isImagesValid = images.length > 0;
 
-  return isBasicDetailsValid && isLocationValid && isFacilitiesValid && isImagesValid;
-};
-
+    return (
+      isBasicDetailsValid &&
+      isLocationValid &&
+      isFacilitiesValid &&
+      isImagesValid
+    );
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -145,7 +155,9 @@ const validateForm = () => {
 
     setLoading(true); // Show loading spinner
 
-    const imageUploadPromises = images.map((image) => uploadImageToCloudinary(image));
+    const imageUploadPromises = images.map((image) =>
+      uploadImageToCloudinary(image)
+    );
     const uploadedImageUrls = await Promise.all(imageUploadPromises);
     const successfulUploads = uploadedImageUrls.filter((url) => url !== null);
 
@@ -175,7 +187,7 @@ const validateForm = () => {
       });
 
       if (response.ok) {
-        setShowSuccessMessage(true); 
+        setShowSuccessMessage(true);
         setBasicDetails({
           title: "",
           description: "",
@@ -189,10 +201,10 @@ const validateForm = () => {
           state: "Gujarat",
           country: "India",
         });
-        setImages([]); 
+        setImages([]);
         setFacilityValues({});
         setTimeout(() => {
-          setShowSuccessMessage(false); 
+          setShowSuccessMessage(false);
           setLoading(false); // Hide loading spinner
           navigate("/myproperties");
         }, 3000);
@@ -208,31 +220,10 @@ const validateForm = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <div className={`bg-white p-8 rounded-lg shadow-lg relative ${loading ? "opacity-50" : ""}`}>
+      <div className={`bg-white p-8 rounded-lg shadow-lg relative $`}>
         {loading && (
-          <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-50">
-            <div className="loader"> {/* Replace with actual spinner from Tailwind CSS */}
-              <svg
-                className="animate-spin h-8 w-8 text-teal-600"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v8z"
-                ></path>
-              </svg>
-            </div>
+          <div className="fixed inset-0 flex justify-center items-center bg-gray-200 bg-opacity-50 z-50">
+            <Spinner />
           </div>
         )}
 
@@ -249,10 +240,12 @@ const validateForm = () => {
         {showSuccessMessage && (
           <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6">
             <strong className="font-bold">Success!</strong>
-            <span className="block sm:inline"> Property uploaded successfully.</span>
+            <span className="block sm:inline">
+              {" "}
+              Property uploaded successfully.
+            </span>
           </div>
         )}
-
 
         <div className="flex space-x-4 mb-6">
           <button

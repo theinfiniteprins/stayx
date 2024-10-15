@@ -3,33 +3,30 @@ import { useParams } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import config from "../configs/config";
-import Spinner from "./Spinner"; 
+import Spinner from "./Spinner";
 
 const ShowProperty = () => {
   const { id } = useParams(); // Get the ID from the URL
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [facilitiesInfo, setFacilitiesInfo] = useState([]);
-  const [liked, setLiked] = useState(false); 
+  const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [isLoadingLike, setIsLoadingLike] = useState(false);
 
   useEffect(() => {
     const fetchProperty = async () => {
       try {
-        const response = await fetch(
-          `${config.baseUrl}/properties/${id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include", // Send cookies with the request
-          }
-        );
+        const response = await fetch(`${config.baseUrl}/properties/${id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // Send cookies with the request
+        });
         const data = await response.json();
-        setProperty(data); 
-        setLikeCount(data.likeCount || 0); 
+        setProperty(data);
+        setLikeCount(data.likeCount || 0);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching property data:", error);
@@ -44,16 +41,13 @@ const ShowProperty = () => {
     const fetchFacilityDetails = async () => {
       if (property && property.facilities.length > 0) {
         const promises = property.facilities.map((facility) =>
-          fetch(
-            `${config.baseUrl}/facilities/${facility.facility}`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              credentials: "include", // Send cookies with the request
-            }
-          )
+          fetch(`${config.baseUrl}/facilities/${facility.facility}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include", // Send cookies with the request
+          })
         );
 
         try {
@@ -82,16 +76,13 @@ const ShowProperty = () => {
   useEffect(() => {
     const checkIfPropertyIsLiked = async () => {
       try {
-        const response = await fetch(
-          `${config.baseUrl}/auth/currentuser`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include", // Send cookies with the request
-          }
-        );
+        const response = await fetch(`${config.baseUrl}/auth/currentuser`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // Send cookies with the request
+        });
         const currentUser = await response.json();
 
         if (currentUser.favouriteProperties) {
@@ -110,33 +101,27 @@ const ShowProperty = () => {
   }, [id]);
 
   const handleLikeToggle = async () => {
-    setIsLoadingLike(true); 
+    setIsLoadingLike(true);
     try {
       if (liked) {
         // Dislike the property
-        await fetch(
-          `${config.baseUrl}/properties/${id}/dislike`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include", // Send cookies with the request
-          }
-        );
+        await fetch(`${config.baseUrl}/properties/${id}/dislike`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // Send cookies with the request
+        });
         setLikeCount(likeCount - 1);
       } else {
         // Like the property
-        await fetch(
-          `${config.baseUrl}/properties/${id}/like`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include", // Send cookies with the request
-          }
-        );
+        await fetch(`${config.baseUrl}/properties/${id}/like`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // Send cookies with the request
+        });
         setLikeCount(likeCount + 1);
       }
 
@@ -144,13 +129,13 @@ const ShowProperty = () => {
     } catch (error) {
       console.error("Error liking/disliking the property:", error);
     } finally {
-      setIsLoadingLike(false); 
+      setIsLoadingLike(false);
     }
   };
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto p-4">
+      <div className="fixed inset-0 flex justify-center items-center bg-gray-200 bg-opacity-50 z-50">
         <Spinner />
       </div>
     );

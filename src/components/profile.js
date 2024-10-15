@@ -1,7 +1,15 @@
 // src/components/Profile.js
 import React, { useState, useEffect, useRef } from "react";
 import config from "../configs/config"; // Ensure you have a config file for base URL
-import { cloudinaryConfigProfile } from "../configs/cloudinaryConfigProfile"; // Cloudinary configuration
+import { cloudinaryConfigProfile } from "../configs/cloudinaryConfig"; // Cloudinary configuration
+
+const Spinner = ({ small }) => {
+  return (
+    <div className={`flex items-center justify-center ${small ? 'w-5 h-5' : 'w-8 h-8'} border-4 border-t-transparent border-teal-600 rounded-full animate-spin`}>
+      {/* Spinner styled with Tailwind CSS */}
+    </div>
+  );
+};
 
 const Profile = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -11,6 +19,7 @@ const Profile = () => {
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
   const fileInputRef = useRef(null); // Reference for the file input
 
   useEffect(() => {
@@ -79,7 +88,26 @@ const Profile = () => {
     }
   };
 
+  const validateForm = () => {
+    const errors = {};
+    if (!editedUser.name) errors.name = "Name is required.";
+    if (!editedUser.email) {
+      errors.email = "Email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(editedUser.email)) {
+      errors.email = "Email format is invalid.";
+    }
+    if (!editedUser.mobileNumber) {
+      errors.mobileNumber = "Mobile number is required.";
+    } else if (!/^\d{10}$/.test(editedUser.mobileNumber)) {
+      errors.mobileNumber = "Mobile number must be 10 digits.";
+    }
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0; // Return true if no errors
+  };
+
   const handleSaveClick = async () => {
+    if (!validateForm()) return; // Validate form before submission
+
     try {
       let imageUrl = editedUser.avatar; // Keep the current avatar if no new image is uploaded
 
@@ -132,7 +160,11 @@ const Profile = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner /> {/* Show loading spinner */}
+      </div>
+    );
   }
 
   if (error) {
@@ -140,7 +172,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="bg-white p-8 shadow-lg rounded-lg max-w-md mx-auto mt-10">
+    <div className="bg-white p-8 shadow-lg rounded-lg max-w-md mx-auto mt-10 relative">
       <div className="flex items-center justify-center mb-4">
         <img
           src={previewUrl || editedUser.avatar}
@@ -164,28 +196,41 @@ const Profile = () => {
               name="name"
               value={editedUser.name}
               onChange={handleChange}
-              className="text-xl font-semibold mb-2 border-b-2 border-gray-300 text-center"
+              className={`text-xl font-semibold mb-2 border-b-2 border-gray-300 text-center ${formErrors.name ? "border-red-500" : ""}`}
+              placeholder="Name"
             />
+            {formErrors.name && <p className="text-red-500">{formErrors.name}</p>}
             <input
               type="email"
               name="email"
               value={editedUser.email}
               onChange={handleChange}
-              className="text-gray-600 mb-1 border-b-2 border-gray-300 text-center"
+              className={`text-gray-600 mb-1 border-b-2 border-gray-300 text-center ${formErrors.email ? "border-red-500" : ""}`}
+              placeholder="Email"
             />
+            {formErrors.email && <p className="text-red-500">{formErrors.email}</p>}
             <input
               type="text"
               name="mobileNumber"
               value={editedUser.mobileNumber}
               onChange={handleChange}
-              className="text-gray-600 mb-1 border-b-2 border-gray-300 text-center"
+              className={`text-gray-600 mb-1 border-b-2 border-gray-300 text-center ${formErrors.mobileNumber ? "border-red-500" : ""}`}
+              placeholder="Mobile Number"
             />
+            {formErrors.mobileNumber && <p className="text-red-500">{formErrors.mobileNumber}</p>}
             <div className="flex justify-around mt-4">
               <button
                 onClick={handleSaveClick}
-                className="px-4 py-2 bg-teal-600 text-white rounded-md"
+                className="px-4 py-2 bg-teal-600 text-white rounded-md relative"
               >
-                {uploading ? "Saving..." : "Save"}
+                {uploading ? (
+                  <div className="flex items-center">
+                    <Spinner small /> {/* Small spinner while uploading */}
+                    <span className="ml-2">Saving...</span>
+                  </div>
+                ) : (
+                  "Save"
+                )}
               </button>
               <button
                 onClick={handleCancelClick}
