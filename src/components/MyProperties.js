@@ -45,6 +45,31 @@ const MyProperties = () => {
     navigate(`/property/${propertyId}`); // Navigate to the property details page
   };
 
+  // Handle delete action
+  const handleDelete = async (propertyId) => {
+    try {
+      // Delete the property
+      await axios.delete(`${base_url}/properties/${propertyId}`, {
+        withCredentials: true, // Make sure to include credentials
+      });
+
+      // Delete from slider (if needed)
+      await axios.delete(`${base_url}/slider/${propertyId}`, {
+        withCredentials: true, // Include credentials
+      });
+
+      // Filter out the deleted property from the state
+      setProperties(properties.filter((property) => property._id !== propertyId));
+    } catch (error) {
+      console.error("Error deleting property or from slider:", error);
+    }
+  };
+
+  // Handle edit action
+  const handleEdit = (propertyId) => {
+    navigate(`/edit/${propertyId}`); // Navigate to the edit page with the property ID
+  };
+
   return (
     <div className="container mx-auto mt-5">
       <h1 className="text-2xl font-bold m-4">My Properties</h1>
@@ -80,8 +105,22 @@ const MyProperties = () => {
               </div>
               {/* Edit & Delete Icons */}
               <div className="flex items-center space-x-4 ml-4">
-                <FaEdit className="text-blue-500 cursor-pointer" size={28} />
-                <FaTrashAlt className="text-red-500 cursor-pointer" size={28} />
+                <FaEdit
+                  className="text-blue-500 cursor-pointer"
+                  size={28}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent row click when icon is clicked
+                    handleEdit(property._id); // Trigger edit action
+                  }}
+                />
+                <FaTrashAlt
+                  className="text-red-500 cursor-pointer"
+                  size={28}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent row click when icon is clicked
+                    handleDelete(property._id); // Trigger delete action
+                  }}
+                />
               </div>
             </div>
           ))
