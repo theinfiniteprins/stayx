@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import PropertyCard from "./PropertyCard"; // Use the PropertyCard component
 import { useNavigate } from "react-router-dom";
+import config from "../configs/config";
 
 const FavouriteProperties = () => {
   const [favouriteProperties, setFavouriteProperties] = useState([]);
@@ -12,7 +13,7 @@ const FavouriteProperties = () => {
       try {
         // Fetch current user to get their favorite properties
         const userResponse = await axios.get(
-          "https://rent-x-backend-nine.vercel.app/auth/currentuser",
+          `${config.baseUrl}/auth/currentuser`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -26,7 +27,7 @@ const FavouriteProperties = () => {
         if (favPropertyIds && favPropertyIds.length > 0) {
           // Fetch the actual favorite property details
           const propertyPromises = favPropertyIds.map((id) =>
-            axios.get(`https://rent-x-backend-nine.vercel.app/properties/${id}`)
+            axios.get(`${config.baseUrl}/properties/${id}`)
           );
           const propertyResponses = await Promise.all(propertyPromises);
 

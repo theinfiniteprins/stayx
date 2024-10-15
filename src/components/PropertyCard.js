@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import config from "../configs/config";
 
 const PropertyCard = ({ property, onClick }) => {
   const [liked, setLiked] = useState(false);
@@ -9,7 +10,7 @@ const PropertyCard = ({ property, onClick }) => {
     const checkIfLiked = async () => {
       try {
         const response = await fetch(
-          `https://rent-x-backend-nine.vercel.app/auth/currentuser`,
+          `${config.baseUrl}/auth/currentuser`,
           {
             method: "GET",
             headers: {
@@ -38,7 +39,7 @@ const PropertyCard = ({ property, onClick }) => {
       if (liked) {
         // Dislike the property
         await fetch(
-          `https://rent-x-backend-nine.vercel.app/properties/${property._id}/dislike`,
+          `${config.baseUrl}/properties/${property._id}/dislike`,
           {
             method: "PUT",
             headers: {
@@ -51,7 +52,7 @@ const PropertyCard = ({ property, onClick }) => {
       } else {
         // Like the property
         await fetch(
-          `https://rent-x-backend-nine.vercel.app/properties/${property._id}/like`,
+          `${config.baseUrl}/properties/${property._id}/like`,
           {
             method: "PUT",
             headers: {

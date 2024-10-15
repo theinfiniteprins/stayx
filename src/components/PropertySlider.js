@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import config from "../configs/config";
 
 const PreviousArrow = ({ className, style, onClick }) => (
   <div className={`${className} custom-arrow-left`} style={{ ...style }} onClick={onClick}></div>
@@ -19,7 +20,7 @@ const PropertySlider = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://rent-x-backend-nine.vercel.app/slider/");
+        const response = await axios.get(`${config.baseUrl}/slider/`);
         const filteredData = response.data.filter(property => property.isActive); // Only show active properties
         setSliderData(filteredData);
       } catch (error) {

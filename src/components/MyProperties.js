@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrashAlt, FaHeart } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import config from "../configs/config";
 
 const MyProperties = () => {
   const [properties, setProperties] = useState([]);
   const [userId, setUserId] = useState(null); // State to store the current user's ID
-  const base_url = "https://rent-x-backend-nine.vercel.app"; // Replace with your actual base_url
   const navigate = useNavigate(); // useNavigate hook from React Router
 
   // Fetch the current user's details
   useEffect(() => {
     axios
-      .get(`${base_url}/auth/currentuser`, { withCredentials: true }) // API call to get current user with credentials
+      .get(`${config.baseUrl}/auth/currentuser`, { withCredentials: true }) // API call to get current user with credentials
       .then((response) => {
         const currentUser = response.data; // Assuming user data contains ID
         setUserId(currentUser._id); // Store the user's ID
@@ -26,7 +26,7 @@ const MyProperties = () => {
   useEffect(() => {
     if (userId) {
       axios
-        .get(`${base_url}/properties/`, { withCredentials: true }) // Include credentials in the property request as well
+        .get(`${config.baseUrl}/properties/`, { withCredentials: true }) // Include credentials in the property request as well
         .then((response) => {
           // Filter properties where userRef matches the current userId
           const userProperties = response.data.filter(
@@ -49,12 +49,12 @@ const MyProperties = () => {
   const handleDelete = async (propertyId) => {
     try {
       // Delete the property
-      await axios.delete(`${base_url}/properties/${propertyId}`, {
+      await axios.delete(`${config.baseUrl}/properties/${propertyId}`, {
         withCredentials: true, // Make sure to include credentials
       });
 
       // Delete from slider (if needed)
-      await axios.delete(`${base_url}/slider/${propertyId}`, {
+      await axios.delete(`${config.baseUrl}/slider/${propertyId}`, {
         withCredentials: true, // Include credentials
       });
 

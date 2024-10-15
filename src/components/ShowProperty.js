@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
+import config from "../configs/config";
 
 const ShowProperty = () => {
   const { id } = useParams(); // Get the ID from the URL
@@ -15,7 +16,7 @@ const ShowProperty = () => {
     const fetchProperty = async () => {
       try {
         const response = await fetch(
-          `https://rent-x-backend-nine.vercel.app/properties/${id}`,
+          `${config.baseUrl}/properties/${id}`,
           {
             method: "GET",
             headers: {
@@ -42,7 +43,7 @@ const ShowProperty = () => {
       if (property && property.facilities.length > 0) {
         const promises = property.facilities.map((facility) =>
           fetch(
-            `https://rent-x-backend-nine.vercel.app/facilities/${facility.facility}`,
+            `${config.baseUrl}/facilities/${facility.facility}`,
             {
               method: "GET",
               headers: {
@@ -80,7 +81,7 @@ const ShowProperty = () => {
     const checkIfPropertyIsLiked = async () => {
       try {
         const response = await fetch(
-          "https://rent-x-backend-nine.vercel.app/auth/currentuser",
+          `${config.baseUrl}/auth/currentuser`,
           {
             method: "GET",
             headers: {
@@ -111,7 +112,7 @@ const ShowProperty = () => {
       if (liked) {
         // Dislike the property
         await fetch(
-          `https://rent-x-backend-nine.vercel.app/properties/${id}/dislike`,
+          `${config.baseUrl}/properties/${id}/dislike`,
           {
             method: "PUT",
             headers: {
@@ -124,7 +125,7 @@ const ShowProperty = () => {
       } else {
         // Like the property
         await fetch(
-          `https://rent-x-backend-nine.vercel.app/properties/${id}/like`,
+          `${config.baseUrl}/properties/${id}/like`,
           {
             method: "PUT",
             headers: {

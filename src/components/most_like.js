@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import PropertyCard from "./PropertyCard"; // Use the PropertyCard component
 import { useNavigate } from "react-router-dom";
+import config from "../configs/config";
 
 const MostLiked = () => {
   const [mostLikedProperties, setMostLikedProperties] = useState([]);
@@ -12,7 +13,7 @@ const MostLiked = () => {
   useEffect(() => {
     const fetchMostLikedProperties = async () => {
       try {
-        const response = await axios.get("https://rent-x-backend-nine.vercel.app/properties");
+        const response = await axios.get(`${config.baseUrl}/properties`);
         const sortedProperties = response.data
           .sort((a, b) => b.likeCount - a.likeCount) // Sort properties by likeCount
           .slice(0, 6); // Optionally limit to top 5 most liked properties
