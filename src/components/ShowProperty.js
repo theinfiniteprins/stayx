@@ -8,12 +8,19 @@ const ShowProperty = () => {
   const { id } = useParams(); // Get the ID from the URL
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [facilitiesInfo, setFacilitiesInfo] = useState([]);
 
   useEffect(() => {
     const fetchProperty = async () => {
       try {
         const response = await axios.get(
-          `https://rent-x-backend-nine.vercel.app/properties/${id}`
+          `https://rent-x-backend-nine.vercel.app/properties/${id}`,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
         );
         setProperty(response.data); // Set fetched data as property
         setLoading(false);
@@ -25,6 +32,41 @@ const ShowProperty = () => {
 
     fetchProperty();
   }, [id]); // The effect runs whenever the id changes
+
+  useEffect(() => {
+    const fetchFacilityDetails = async () => {
+      if (property && property.facilities.length > 0) {
+        const promises = property.facilities.map((facility) =>
+          axios.get(
+            `https://rent-x-backend-nine.vercel.app/facilities/${facility.facility}`,
+            {
+              withCredentials: true,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          )
+        );
+
+        try {
+          const facilitiesData = await Promise.all(promises);
+          const facilitiesWithDetails = facilitiesData.map(
+            (response, index) => ({
+              ...response.data, // Facility details (name, iconImage)
+              value: property.facilities[index].value, // Corresponding value from property.facilities
+            })
+          );
+          setFacilitiesInfo(facilitiesWithDetails);
+        } catch (error) {
+          console.error("Error fetching facility details:", error);
+        }
+      }
+    };
+
+    if (property) {
+      fetchFacilityDetails();
+    }
+  }, [property]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -94,14 +136,23 @@ const ShowProperty = () => {
           <div className="property-facilities mb-6">
             <h3 className="text-xl font-semibold mb-2">Facilities:</h3>
             <div className="flex gap-4 flex-wrap">
-              {property.facilities.map((facility, index) => (
-                <div
-                  key={index}
-                  className="bg-teal-100 px-6 py-3 rounded-lg shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl cursor-pointer"
-                >
-                  {facility.value}
-                </div>
-              ))}
+              {facilitiesInfo
+                .filter((facility) => facility.value !== false) // Filter out facilities with a false value
+                .map((facility, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center bg-teal-100 px-6 py-3 rounded-lg shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl cursor-pointer"
+                  >
+                    <img
+                      src={facility.iconImage}
+                      alt={facility.name}
+                      className="w-6 h-6 mr-2"
+                    />
+                    <span className="font-semibold">{facility.name}</span>
+
+                    <span className="ml-2">{facility.value}</span>
+                  </div>
+                ))}
             </div>
           </div>
 
