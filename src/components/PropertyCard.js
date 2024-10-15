@@ -4,7 +4,7 @@ import React from "react";
 const PropertyCard = ({ property, onClick }) => {
   return (
     <div
-      className="max-w-md mx-auto bg-white border border-gray-300 shadow-lg rounded-lg overflow-hidden p-4 m-4 hover:shadow-xl transition-shadow duration-300" // Increased width
+      className="max-w-md mx-auto bg-white border border-gray-300 shadow-lg rounded-lg overflow-hidden p-4 m-4 hover:shadow-xl transition-shadow duration-300"
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
@@ -32,12 +32,15 @@ const PropertyCard = ({ property, onClick }) => {
         {/* Facilities and Like Count */}
         <div className="flex justify-between items-center">
           <div className="text-sm text-gray-600 space-y-1">
-            {property.facilities.map((facility, index) => (
-              <p className="flex items-center" key={index}> {/* Use index as key */}
-                <i className={`fas ${index === 0 ? 'fa-bed' : 'fa-bath'} text-teal-400 mr-2`}></i> {/* Use dynamic icon */}
-                {facility.value} {/* Only print the value */}
-              </p>
-            ))}
+            {/* Use flex to display facilities side by side */}
+            <div className="flex space-x-4"> {/* Add flex and space between items */}
+              {property.facilities.slice(0, 2).map((facility, index) => (
+                <p className="flex items-center text-lg font-semibold mr-5" key={index}> {/* Use index as key */}
+                <i className={`fas ${index === 0 ? 'fa-bed' : 'fa-bath'} text-teal-500 mr-3 text-2xl`}></i> {/* Larger icon with more space */}
+                {facility.value} {/* Print the facility value */}
+              </p>              
+              ))}
+            </div>
           </div>
           <div className="flex items-center space-x-2">
             <i className="fas fa-heart text-red-500"></i>
