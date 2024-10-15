@@ -5,16 +5,42 @@ import config from "../configs/config";
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(null); // To handle error messages
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Helper function to validate email format
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setError(null);
+
+    if (!email || !password) {
+      setError('Please fill in both email and password fields.');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      return;
+    }
 
     const loginData = {
       email,
       password,
     };
+
+    setIsLoading(true);
 
     try {
       // Send a POST request to the authentication API
@@ -26,26 +52,32 @@ const Login = () => {
         body: JSON.stringify(loginData),
         credentials: 'include', // To ensure cookies are included
       });
-
+      
       // Check if the response is successful
       if (response.ok) {
         const data = await response.json();
         
         // Store JWT token in the browser's cookie (handled by server if HttpOnly)
-        
-        // Set a custom `isLogged` cookie to indicate successful login without an expiration timer
-        const isSecure = window.location.protocol === 'https:'; // Check if running over HTTPS
+        const isSecure = window.location.protocol === 'https:';
         document.cookie = `isLogged=true; path=/; ${isSecure ? 'secure;' : ''} SameSite=Strict`;
 
         console.log('Login successful');
-        navigate('/'); // Redirect to the dashboard after login
+        setIsLoading(false); 
+        navigate('/');
       } else {
-        const result = await response.json();
-        setError(result.message || 'Login failed'); // Display error message from API
+        setIsLoading(false);
+
+        if (response.status === 401 || response.status === 404) {
+          setError('Invalid email or password. Please try again.');
+        } else if (response.status === 500) {
+          setError('Internal server error. Please try again later.');
+        } else {
+          setError(response.message || 'Login failed. Please try again.');
+        }
       }
     } catch (error) {
       console.error('Error:', error);
-      setError('Something went wrong. Please try again.'); // Generic error message
+      setIsLoading(false);
     }
   };
 
@@ -53,6 +85,14 @@ const Login = () => {
     <div className="max-w-md mx-auto mt-20 p-6 bg-gray-100 rounded-lg shadow-lg shadow-gray-800/80">
       <h2 className="text-center mb-5 text-2xl font-bold">Login</h2>
       {error && <p className="text-red-500 text-center">{error}</p>}
+      
+      {/* Display spinner while loading */}
+      {isLoading && (
+        <div className="flex justify-center items-center mb-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-teal-600"></div>
+        </div>
+      )}
+      
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block mb-1">Email</label>
@@ -77,8 +117,9 @@ const Login = () => {
         <button
           className="w-full p-2 bg-teal-600 text-white rounded-md hover:bg-teal-500"
           type="submit"
+          disabled={isLoading}
         >
-          Login
+          {isLoading ? 'Logging in...' : 'Login'}
         </button>
       </form>
 
