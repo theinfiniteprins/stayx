@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import config from "../configs/config"; // Assuming you have config.js for baseUrl
+import { useNavigate } from "react-router-dom"; 
+import config from "../configs/config";
 import { cloudinaryConfig } from "../configs/cloudinaryConfig";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const UploadProperty = () => {
   const [activeSection, setActiveSection] = useState("basicDetails");
@@ -9,60 +9,50 @@ const UploadProperty = () => {
     title: "",
     description: "",
     price: "",
-    securityDeposit: "", // Corrected to match your backend
+    securityDeposit: "",
     category: "",
   });
   const [location, setLocation] = useState({
     address: "",
     city: "",
-    state: "Gujarat", // Default State
-    country: "India", // Default Country
+    state: "Gujarat",
+    country: "India",
   });
-  const [images, setImages] = useState([]); // For storing local files
+  const [images, setImages] = useState([]); 
   const [categories, setCategories] = useState([]);
-  const [selectedCategoryFacilities, setSelectedCategoryFacilities] = useState(
-    []
-  );
+  const [selectedCategoryFacilities, setSelectedCategoryFacilities] = useState([]);
   const [facilityValues, setFacilityValues] = useState({});
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [loading, setLoading] = useState(false); // Added loading state
   const navigate = useNavigate(); 
 
-  // Cloudinary configuration using fetch
   const uploadImageToCloudinary = async (imageFile) => {
     const formData = new FormData();
     formData.append("file", imageFile);
-    formData.append("upload_preset", cloudinaryConfig.uploadPreset); // Replace with your Cloudinary upload preset
+    formData.append("upload_preset", cloudinaryConfig.uploadPreset);
     formData.append("cloud_name", cloudinaryConfig.cloudName);
     try {
       const response = await fetch(
         `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
+        { method: "POST", body: formData }
       );
-
       const data = await response.json();
-
-      if (response.ok) {
-        return data.secure_url; // Return the image URL
-      } else {
-        console.error("Failed to upload:", data.error.message);
-        return null;
-      }
+      if (response.ok) return data.secure_url;
+      else console.error("Failed to upload:", data.error.message);
+      return null;
     } catch (error) {
       console.error("Error uploading image to Cloudinary:", error);
       return null;
     }
   };
 
-  // Fetch categories from the backend using fetch
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await fetch(`${config.baseUrl}/categories`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
-          credentials: "include", // Equivalent to axios' withCredentials
+          credentials: "include",
         });
         const data = await response.json();
         setCategories(data);
@@ -73,15 +63,12 @@ const UploadProperty = () => {
     fetchCategories();
   }, []);
 
-  // Update facilities list when the category changes
   useEffect(() => {
     if (basicDetails.category) {
       const selectedCategory = categories.find(
         (cat) => cat._id === basicDetails.category
       );
-      setSelectedCategoryFacilities(
-        selectedCategory ? selectedCategory.facilities : []
-      );
+      setSelectedCategoryFacilities(selectedCategory ? selectedCategory.facilities : []);
       setFacilityValues({});
     } else {
       setSelectedCategoryFacilities([]);
@@ -100,42 +87,73 @@ const UploadProperty = () => {
 
   const handleImagesChange = (e) => {
     const files = Array.from(e.target.files);
-    setImages((prevImages) => [...prevImages, ...files]); // Append new images to the array
+    setImages((prevImages) => [...prevImages, ...files]);
   };
 
   const handleFacilityChange = (e, facilityId, type) => {
     const { value } = e.target;
-    const updatedValue =
-      type === "radio" ? (value === "true" ? true : false) : value;
+    const updatedValue = type === "radio" ? (value === "true" ? true : false) : value;
     setFacilityValues({ ...facilityValues, [facilityId]: updatedValue });
   };
 
-  // Function to remove an image from the array
   const removeImage = (indexToRemove) => {
     setImages((prevImages) =>
       prevImages.filter((_, index) => index !== indexToRemove)
     );
   };
 
+// Validation before submission
+const validateForm = () => {
+  const { title, description, price, category } = basicDetails;
+  const { address, city, state, country } = location;
+
+  // Validate basic details
+  const isBasicDetailsValid = 
+    title.trim() !== "" &&
+    description.trim() !== "" &&
+    price.trim() !== "" &&
+    category.trim() !== "";
+
+  // Validate location
+  const isLocationValid =
+    address.trim() !== "" &&
+    city.trim() !== "" &&
+    state.trim() !== "" &&
+    country.trim() !== "";
+
+  // Validate facilities (ensure all facilities have values)
+  const isFacilitiesValid = selectedCategoryFacilities.every((facility) => {
+    const value = facilityValues[facility._id];
+    // Check for existence and ensure it's not empty
+    return value !== undefined && value !== "";
+  });
+
+  // Validate images (at least one image should be uploaded)
+  const isImagesValid = images.length > 0;
+
+  return isBasicDetailsValid && isLocationValid && isFacilitiesValid && isImagesValid;
+};
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submit Button Clicked");
 
-    // Upload images to Cloudinary and get their URLs
-    const imageUploadPromises = images.map((image) =>
-      uploadImageToCloudinary(image)
-    );
+    if (!validateForm()) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    setLoading(true); // Show loading spinner
+
+    const imageUploadPromises = images.map((image) => uploadImageToCloudinary(image));
     const uploadedImageUrls = await Promise.all(imageUploadPromises);
-
-    // Filter out failed uploads
     const successfulUploads = uploadedImageUrls.filter((url) => url !== null);
 
-    // Prepare form data for submission
     const formData = {
       title: basicDetails.title,
       description: basicDetails.description,
       monthlyRent: basicDetails.price,
-      securityDeposit: basicDetails.securityDeposit,
+      securityDeposit: basicDetails.securityDeposit, // Security deposit can be optional
       category: basicDetails.category,
       address: location.address,
       city: location.city,
@@ -146,22 +164,18 @@ const UploadProperty = () => {
         facility: facilityId,
         value: value,
       })),
-      likeCount: 0, // If you want to include likeCount as well
     };
 
-    // Submit the form using fetch
     try {
       const response = await fetch(`${config.baseUrl}/properties`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
-        credentials: "include", // Equivalent to axios' withCredentials
+        credentials: "include",
       });
 
       if (response.ok) {
-        const data = await response.json();
-        console.log("Property uploaded:", data);
-
+        setShowSuccessMessage(true); 
         setBasicDetails({
           title: "",
           description: "",
@@ -175,29 +189,70 @@ const UploadProperty = () => {
           state: "Gujarat",
           country: "India",
         });
-        setImages([]);
+        setImages([]); 
         setFacilityValues({});
-        window.location.href = `/myproperties`;
+        setTimeout(() => {
+          setShowSuccessMessage(false); 
+          setLoading(false); // Hide loading spinner
+          navigate("/myproperties");
+        }, 3000);
       } else {
         console.error("Error uploading property:", response.statusText);
       }
     } catch (error) {
       console.error("Error uploading property:", error);
+    } finally {
+      setLoading(false); // Hide loading spinner in case of failure
     }
   };
 
   return (
     <div className="container mx-auto p-6">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
+      <div className={`bg-white p-8 rounded-lg shadow-lg relative ${loading ? "opacity-50" : ""}`}>
+        {loading && (
+          <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-50">
+            <div className="loader"> {/* Replace with actual spinner from Tailwind CSS */}
+              <svg
+                className="animate-spin h-8 w-8 text-teal-600"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        )}
+
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-teal-600">Upload Property</h2>
           <button
             onClick={handleSubmit}
-            className="bg-teal-600 text-white px-4 py-2 rounded"
+            className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded"
           >
             Upload Property
           </button>
         </div>
+
+        {showSuccessMessage && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6">
+            <strong className="font-bold">Success!</strong>
+            <span className="block sm:inline"> Property uploaded successfully.</span>
+          </div>
+        )}
+
 
         <div className="flex space-x-4 mb-6">
           <button
@@ -243,7 +298,6 @@ const UploadProperty = () => {
         </div>
 
         <form>
-          {/* Basic Details Section */}
           {activeSection === "basicDetails" && (
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-4">Basic Details</h3>
@@ -294,7 +348,6 @@ const UploadProperty = () => {
             </div>
           )}
 
-          {/* Facilities Section */}
           {activeSection === "facilities" &&
             selectedCategoryFacilities.length > 0 && (
               <div className="mb-6">
@@ -305,8 +358,6 @@ const UploadProperty = () => {
                       <label className="block mb-2 font-medium text-gray-700">
                         {facility.name}
                       </label>
-
-                      {/* For number type facilities */}
                       {facility.type === "number" ? (
                         <input
                           type="number"
@@ -318,7 +369,6 @@ const UploadProperty = () => {
                           placeholder="Enter value"
                         />
                       ) : (
-                        // For radio type (Yes/No) facilities, styled as toggle buttons
                         <div className="flex items-center space-x-4">
                           <label className="inline-flex items-center cursor-pointer">
                             <input
@@ -368,7 +418,6 @@ const UploadProperty = () => {
               </div>
             )}
 
-          {/* Location Section */}
           {activeSection === "location" && (
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-4">Location</h3>
@@ -407,7 +456,6 @@ const UploadProperty = () => {
             </div>
           )}
 
-          {/* Images Section */}
           {activeSection === "images" && (
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-4">Images</h3>
