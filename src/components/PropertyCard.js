@@ -129,7 +129,7 @@ const PropertyCard = ({ property, onClick }) => {
                 <p className="flex items-center text-lg font-semibold mr-5" key={index}>
                   <i
                     className={`fas ${
-                      index === 0 ? "fa-bed" : "fa-bath"
+                      index === 0 ? "fa-bath" : "fa-bed"
                     } text-teal-500 mr-3 text-2xl`}
                   />
                   {facility.value}
