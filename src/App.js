@@ -9,9 +9,9 @@ import Register from './components/Register';
 import Profile from './components/profile';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsAndConditions from './components/TermsAndConditions';
-import Test from './components/test';
 import FavouriteProperties from './components/FavouriteProperty';
 import MyProperties from './components/MyProperties';
+import EditProperty from './components/EditProperty';
 import './styles.css';
 
 const App = () => {
@@ -27,9 +27,9 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-        <Route path="/test" element={<Test />} />
         <Route path="/favourites" element={<FavouriteProperties />} />
         <Route path="/myproperties" element={<MyProperties />}/>
+        <Route path="/edit/:id" element={<EditProperty />} />
       </Routes>
     </Router>
   );
