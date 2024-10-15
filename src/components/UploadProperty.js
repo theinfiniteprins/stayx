@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import config from "../configs/config"; // Assuming you have config.js for baseUrl
 import { cloudinaryConfig } from "../configs/cloudinaryConfig";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const UploadProperty = () => {
   const [activeSection, setActiveSection] = useState("basicDetails");
@@ -23,6 +24,7 @@ const UploadProperty = () => {
     []
   );
   const [facilityValues, setFacilityValues] = useState({});
+  const navigate = useNavigate(); 
 
   // Cloudinary configuration using fetch
   const uploadImageToCloudinary = async (imageFile) => {
@@ -30,7 +32,6 @@ const UploadProperty = () => {
     formData.append("file", imageFile);
     formData.append("upload_preset", cloudinaryConfig.uploadPreset); // Replace with your Cloudinary upload preset
     formData.append("cloud_name", cloudinaryConfig.cloudName);
-
     try {
       const response = await fetch(
         `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`,
@@ -176,6 +177,7 @@ const UploadProperty = () => {
         });
         setImages([]);
         setFacilityValues({});
+        window.location.href = `/myproperties`;
       } else {
         console.error("Error uploading property:", response.statusText);
       }
