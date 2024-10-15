@@ -5,9 +5,7 @@ import { cloudinaryConfigProfile } from "../configs/cloudinaryConfig"; // Cloudi
 
 const Spinner = ({ small }) => {
   return (
-    <div className={`flex items-center justify-center ${small ? 'w-5 h-5' : 'w-8 h-8'} border-4 border-t-transparent border-teal-600 rounded-full animate-spin`}>
-      {/* Spinner styled with Tailwind CSS */}
-    </div>
+    <div className={`flex items-center justify-center ${small ? 'w-5 h-5' : 'w-8 h-8'} border-4 border-t-transparent border-teal-600 rounded-full animate-spin`}></div>
   );
 };
 
@@ -91,11 +89,6 @@ const Profile = () => {
   const validateForm = () => {
     const errors = {};
     if (!editedUser.name) errors.name = "Name is required.";
-    if (!editedUser.email) {
-      errors.email = "Email is required.";
-    } else if (!/\S+@\S+\.\S+/.test(editedUser.email)) {
-      errors.email = "Email format is invalid.";
-    }
     if (!editedUser.mobileNumber) {
       errors.mobileNumber = "Mobile number is required.";
     } else if (!/^\d{10}$/.test(editedUser.mobileNumber)) {
@@ -200,15 +193,7 @@ const Profile = () => {
               placeholder="Name"
             />
             {formErrors.name && <p className="text-red-500">{formErrors.name}</p>}
-            <input
-              type="email"
-              name="email"
-              value={editedUser.email}
-              onChange={handleChange}
-              className={`text-gray-600 mb-1 border-b-2 border-gray-300 text-center ${formErrors.email ? "border-red-500" : ""}`}
-              placeholder="Email"
-            />
-            {formErrors.email && <p className="text-red-500">{formErrors.email}</p>}
+            <p className="text-gray-600 mb-1">Email: {editedUser.email}</p>
             <input
               type="text"
               name="mobileNumber"
