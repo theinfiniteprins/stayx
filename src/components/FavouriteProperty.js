@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import PropertyCard from "./PropertyCard"; // Use the PropertyCard component
 import { useNavigate } from "react-router-dom";
+import PropertyCard from "./PropertyCard";
+import Spinner from "./Spinner";
 import config from "../configs/config";
 
 const FavouriteProperties = () => {
@@ -59,13 +60,15 @@ const FavouriteProperties = () => {
               key={property._id}
               property={{
                 ...property,
-                image: property.images[0], // Use the first image from the array
+                image: property.images[0],
               }}
               onClick={() => handleViewProperty(property._id)}
             />
           ))
         ) : (
-          <p>You have no favourite properties yet.</p>
+          <div className="fixed inset-0 flex justify-center items-center bg-gray-200 bg-opacity-50 z-50">
+            <Spinner />
+          </div>
         )}
       </div>
     </div>
