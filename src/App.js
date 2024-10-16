@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
@@ -20,33 +19,35 @@ import './styles.css';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // Add a loading state
 
   useEffect(() => {
-    const fetchCurrentUser = async () => {
-      try {
-        const response = await axios.get(`${config.baseUrl}/auth/currentuser`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        });
-        
-        // If the user data is present, user is authenticated
-        if (response.data) {
-          console.log('Current User Data:', response.data);
-          setCurrentUser(response.data); // Store the current user data
-          setIsAuthenticated(true); // Set authentication status to true
-          console.log('User is authenticated:', isAuthenticated);
-        }
-      } catch (error) {
-        console.error('Error fetching current user:', error);
-        setIsAuthenticated(false); // User is not authenticated if there is an error
+    // Fetch current user
+    axios.get(`${config.baseUrl}/auth/currentuser`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    })
+    .then((response) => {
+      if (response.status === 200 && response.data) {
+        setIsAuthenticated(true); // User is authenticated
+      } else {
+        setIsAuthenticated(false); // Not authenticated
       }
-    };
-  
-    fetchCurrentUser();
+    })
+    .catch((error) => {
+      console.error('Error fetching current user:', error);
+      setIsAuthenticated(false); // Handle error
+    })
+    .finally(() => {
+      setIsLoading(false); // Set loading to false after the check is complete
+    });
   }, []);
+
+  if (isLoading) {
+    return <div></div>;
+  }
 
   return (
     <Router>
