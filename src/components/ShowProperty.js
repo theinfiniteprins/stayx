@@ -13,7 +13,12 @@ const ShowProperty = () => {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [isLoadingLike, setIsLoadingLike] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
+  const [userError, setUserError] = useState("");
+  const [currentUser, setCurrentUser] = useState(null);
 
+  // Fetch property details
   useEffect(() => {
     const fetchProperty = async () => {
       try {
@@ -28,6 +33,9 @@ const ShowProperty = () => {
         setProperty(data);
         setLikeCount(data.likeCount || 0);
         setLoading(false);
+
+        // Fetch user information using userRef
+        fetchUserData(data.userRef); // Pass the userRef to fetch the user data
       } catch (error) {
         console.error("Error fetching property data:", error);
         setLoading(false);
@@ -35,8 +43,32 @@ const ShowProperty = () => {
     };
 
     fetchProperty();
-  }, [id]); // The effect runs whenever the id changes
+  }, [id]);
 
+  // Fetch user data
+  const fetchUserData = async (userRef) => {
+    try {
+      const response = await fetch(`${config.baseUrl}/users/${userRef}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+
+      const data = await response.json();
+      setUserData(data);
+      setIsLoadingUser(false);
+    } catch (err) {
+      setUserError(err.message);
+      setIsLoadingUser(false);
+    }
+  };
+
+  // Fetch facility details
   useEffect(() => {
     const fetchFacilityDetails = async () => {
       if (property && property.facilities.length > 0) {
@@ -74,6 +106,30 @@ const ShowProperty = () => {
   }, [property]);
 
   useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await fetch(`${config.baseUrl}/auth/currentuser`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+
+        if (response.ok) {
+          const currentUserData = await response.json();
+          setCurrentUser(currentUserData);
+        }
+      } catch (error) {
+        console.error("Error fetching current user:", error);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
+
+  // Check if the property is liked
+  useEffect(() => {
     const checkIfPropertyIsLiked = async () => {
       try {
         const response = await fetch(`${config.baseUrl}/auth/currentuser`, {
@@ -87,7 +143,6 @@ const ShowProperty = () => {
 
         if (currentUser.favouriteProperties) {
           const { favouriteProperties } = currentUser;
-          // Check if the current property ID is in the user's favouriteProperties list
           if (favouriteProperties.some((fav) => fav === id)) {
             setLiked(true);
           }
@@ -256,6 +311,33 @@ const ShowProperty = () => {
               {property.address}, {property.city}, {property.state},{" "}
               {property.country}
             </p>
+          </div>
+
+          {/* Uploaded By */}
+          <div className="property-user mb-6">
+            <h3 className="text-xl font-semibold mb-2">Uploaded By</h3>
+            {isLoadingUser ? (
+              <p>Loading...</p>
+            ) : userError ? (
+              <p>Error fetching user: {userError}</p>
+            ) : (
+              userData && (
+                <div className="flex items-center">
+                  <img
+                    src={userData.avatar}
+                    alt={userData.name}
+                    className="w-10 h-10 rounded-full mr-4"
+                  />
+                  <div className="text-gray-700">
+                    {userData.name}
+                    <br />
+                    {currentUser && currentUser._id
+                      ? userData.mobileNumber
+                      : "99XXX XXX52"}
+                  </div>
+                </div>
+              )
+            )}
           </div>
         </div>
       </div>
