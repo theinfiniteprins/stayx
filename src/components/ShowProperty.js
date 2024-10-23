@@ -4,6 +4,7 @@ import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import config from "../configs/config";
 import Spinner from "./Spinner";
+import { Helmet } from 'react-helmet-async';
 
 const ShowProperty = () => {
   const { id } = useParams(); // Get the ID from the URL
@@ -208,6 +209,10 @@ const ShowProperty = () => {
 
   return (
     <div className="max-w-6xl mx-auto p-4">
+      <Helmet>
+          <title>RentX | View Property</title> {/* Custom title */}
+        <meta name="description" content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy." />
+      </Helmet>
       <div className="flex flex-col lg:flex-row">
         {/* Left Side: Image Slider */}
         <div className="w-full lg:w-3/5 h-[400px]">

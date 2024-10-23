@@ -3,10 +3,15 @@ import PropertySlider from "./PropertySlider";
 import MostLiked from "./MostLiked";
 import PropertySearchAndFilter from "./PropertySearchAndFilter";  // Import the new component
 import "../styles.css";
+import { Helmet } from 'react-helmet-async';
 
 const Home = () => {
   return (
     <div className="home-container">
+      <Helmet>
+          <title>RentX</title> {/* Custom title */}
+        <meta name="description" content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy." />
+      </Helmet>
       {/* Property Slider Section */}
       <PropertySlider />
 

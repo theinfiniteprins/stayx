@@ -1,73 +1,75 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Home from './components/Home';
-import PrivacyPolicy from './components/PrivacyPolicy';
-import TermsAndConditions from './components/TermsAndConditions';
-import Login from './components/Login';
-import Register from './components/Register';
-import UploadProperty from './components/UploadProperty';
-import ShowProperty from './components/ShowProperty';
-import Profile from './components/Profile';
-import FavouriteProperties from './components/FavouriteProperty';
-import MyProperties from './components/MyProperties';
-import EditProperty from './components/EditProperty';
-import ProtectedRoute from './components/ProtectedRoute'; // Import the HOC
-import axios from 'axios';
-import config from './configs/config'; // Ensure you have this for base URL
-import './styles.css';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Home from "./components/Home";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import TermsAndConditions from "./components/TermsAndConditions";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import UploadProperty from "./components/UploadProperty";
+import ShowProperty from "./components/ShowProperty";
+import Profile from "./components/Profile";
+import FavouriteProperties from "./components/FavouriteProperty";
+import MyProperties from "./components/MyProperties";
+import EditProperty from "./components/EditProperty";
+import Footer from "./components/Footer";
+import AboutUs from "./components/AboutUs";
+import "./styles.css";
+import { HelmetProvider } from 'react-helmet-async';
 
-const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // Add a loading state
+// This component contains the logic for showing/hiding the Footer based on the route
+const MainLayout = () => {
+  const location = useLocation();
 
-  useEffect(() => {
-    // Fetch current user
-    axios.get(`${config.baseUrl}/auth/currentuser`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-    })
-    .then((response) => {
-      if (response.status === 200 && response.data) {
-        setIsAuthenticated(true); // User is authenticated
-      } else {
-        setIsAuthenticated(false); // Not authenticated
-      }
-    })
-    .catch((error) => {
-      console.error('Error fetching current user:', error);
-      setIsAuthenticated(false); // Handle error
-    })
-    .finally(() => {
-      setIsLoading(false); // Set loading to false after the check is complete
-    });
-  }, []);
+  // Define the paths where the footer SHOULD be displayed
+  const showFooterPaths = [
+    "/",
+    "/terms-and-conditions",
+    "/privacy-policy",
+    "/about",
+  ];
 
-  if (isLoading) {
-    return <div></div>;
-  }
+  // Check if the current path matches any of the showFooterPaths
+  const shouldShowFooter = showFooterPaths.includes(location.pathname);
 
   return (
+    <>
+      <HelmetProvider>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route
+            path="/terms-and-conditions"
+            element={<TermsAndConditions />}
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/property/:id" element={<ShowProperty />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/upload-property" element={<UploadProperty />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/favourites" element={<FavouriteProperties />} />
+          <Route path="/myproperties" element={<MyProperties />} />
+          <Route path="/edit/:id" element={<EditProperty />} />
+        </Routes>
+        {/* Conditionally render the Footer only on Home, Terms and Conditions, and Privacy Policy pages */}
+        {shouldShowFooter && <Footer />}
+      </HelmetProvider>
+    </>
+  );
+};
+
+// The main App component that initializes the Router
+const App = () => {
+  return (
     <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        
-        {/* Protected Routes */}
-        <Route path="/upload-property" element={<ProtectedRoute element={<UploadProperty />} isAuthenticated={isAuthenticated} />} />
-        <Route path="/profile" element={<ProtectedRoute element={<Profile />} isAuthenticated={isAuthenticated} />} />
-        <Route path="/favourites" element={<ProtectedRoute element={<FavouriteProperties />} isAuthenticated={isAuthenticated} />} />
-        <Route path="/myproperties" element={<ProtectedRoute element={<MyProperties />} isAuthenticated={isAuthenticated} />} />
-        <Route path="/edit/:id" element={<ProtectedRoute element={<EditProperty />} isAuthenticated={isAuthenticated} />} />
-        
-        <Route path="/property/:id" element={<ShowProperty />} />
-      </Routes>
+      <MainLayout />
     </Router>
   );
 };

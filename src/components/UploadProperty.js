@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Spinner from "./Spinner";
 import config from "../configs/config";
 import { cloudinaryConfigProperty } from "../configs/cloudinaryConfig";
+import { Helmet } from 'react-helmet-async';
 
 const UploadProperty = () => {
   const [activeSection, setActiveSection] = useState("basicDetails");
@@ -220,6 +221,10 @@ const UploadProperty = () => {
 
   return (
     <div className="container mx-auto p-6">
+      <Helmet>
+          <title>RentX | Upload Property</title> {/* Custom title */}
+        <meta name="description" content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy." />
+      </Helmet>
       <div className={`bg-white p-8 rounded-lg shadow-lg relative $`}>
         {loading && (
           <div className="fixed inset-0 flex justify-center items-center bg-gray-200 bg-opacity-50 z-50">

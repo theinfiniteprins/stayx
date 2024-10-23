@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import config from "../configs/config"; // Ensure you have a config file for base URL
 import { cloudinaryConfigProfile } from "../configs/cloudinaryConfig"; // Cloudinary configuration
+import { Helmet } from 'react-helmet-async';
 
 const Spinner = ({ small }) => {
   return (
@@ -166,6 +167,10 @@ const Profile = () => {
 
   return (
     <div className="bg-white p-8 shadow-lg rounded-lg max-w-md mx-auto mt-10 relative">
+      <Helmet>
+          <title>RentX | Profile</title> {/* Custom title */}
+        <meta name="description" content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy." />
+      </Helmet>
       <div className="flex items-center justify-center mb-4">
         <img
           src={previewUrl || editedUser.avatar}

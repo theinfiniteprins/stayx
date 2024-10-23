@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // Replaced useHistory with useNavigate
 import config from "../configs/config"; // Assuming you have config.js for baseUrl
+import { Helmet } from 'react-helmet-async';
 
 const EditProperty = () => {
   const { id } = useParams(); // Get property ID from URL
@@ -159,6 +160,10 @@ const EditProperty = () => {
 
   return (
     <div className="container mx-auto p-6">
+      <Helmet>
+          <title>RentX | Edit Property</title> {/* Custom title */}
+        <meta name="description" content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy." />
+      </Helmet>
       <div className="bg-white p-8 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-teal-600">Edit Property</h2>

@@ -5,6 +5,7 @@ import Spinner from "./Spinner";
 import ConfirmationModal from "./ConfirmationModal";
 import config from "../configs/config";
 import axios from "axios";
+import { Helmet } from 'react-helmet-async';
 
 const MyProperties = () => {
   const [properties, setProperties] = useState([]);
@@ -77,6 +78,10 @@ const MyProperties = () => {
 
   return (
     <div className="container mx-auto mt-5 relative">
+      <Helmet>
+          <title>RentX | My Properties</title> {/* Custom title */}
+        <meta name="description" content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy." />
+      </Helmet>
       <h1 className="text-2xl font-bold m-4">My Properties</h1>
       <div className="grid grid-cols-1 gap-6">
         {loading || properties.length <= 0 ? ( // Show loading spinner if loading
