@@ -79,8 +79,8 @@ const MyProperties = () => {
   return (
     <div className="container mx-auto mt-5 relative">
       <Helmet>
-          <title>RentX | My Properties</title> {/* Custom title */}
-        <meta name="description" content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy." />
+          <title>StayX | My Properties</title> {/* Custom title */}
+        <meta name="description" content="Find your dream rental home on StayX. Explore verified listings, compare properties, and make your move easy." />
       </Helmet>
       <h1 className="text-2xl font-bold m-4 text-center">My Properties</h1>
       <div className="grid grid-cols-1 gap-6">

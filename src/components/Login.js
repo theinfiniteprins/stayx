@@ -85,8 +85,8 @@ const Login = () => {
   return (
     <div className="max-w-md mx-auto mt-20 p-6 bg-gray-100 rounded-lg shadow-lg shadow-gray-800/80">
       <Helmet>
-          <title>RentX | Login</title> {/* Custom title */}
-        <meta name="description" content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy." />
+          <title>StayX | Login</title> {/* Custom title */}
+        <meta name="description" content="Find your dream rental home on StayX. Explore verified listings, compare properties, and make your move easy." />
       </Helmet>
       <h2 className="text-center mb-5 text-2xl font-bold">Login</h2>
       {error && <p className="text-red-500 text-center">{error}</p>}

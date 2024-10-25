@@ -6,16 +6,16 @@ const AboutUs = () => {
     <div className="bg-gray-100 py-12">
 
       <Helmet>
-        <title>RentX | About Us</title> {/* Custom title */}
-        <meta name="description" content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy." />
+        <title>StayX | About Us</title> {/* Custom title */}
+        <meta name="description" content="Find your dream rental home on StayX. Explore verified listings, compare properties, and make your move easy." />
       </Helmet>
 
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-green-400 to-blue-500 text-white py-20">
         <div className="container mx-auto text-center">
-          <h1 className="text-4xl lg:text-5xl font-bold mb-4">Welcome to RentX</h1>
+          <h1 className="text-4xl lg:text-5xl font-bold mb-4">Welcome to StayX</h1>
           <p className="text-lg lg:text-xl font-light max-w-3xl mx-auto leading-relaxed">
-            At RentX, we are transforming the rental experience by connecting renters with the right properties in a 
+            At StayX, we are transforming the rental experience by connecting renters with the right properties in a 
             transparent, secure, and convenient way.
           </p>
         </div>
@@ -72,7 +72,7 @@ const AboutUs = () => {
         <div className="container mx-auto">
           <h2 className="text-3xl lg:text-4xl font-bold mb-6">Ready to List or Rent a Property?</h2>
           <p className="text-lg font-light mb-8 max-w-3xl mx-auto">
-            Whether you're looking to find a rental or list your property, RentX makes the process quick, easy, and 
+            Whether you're looking to find a rental or list your property, StayX makes the process quick, easy, and 
             transparent. Join our community of satisfied renters and property owners today!
           </p>
           <a href="/" className="px-6 py-3 bg-green-500 hover:bg-green-600 rounded text-white font-semibold">

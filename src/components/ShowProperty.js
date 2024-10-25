@@ -210,8 +210,8 @@ const ShowProperty = () => {
   return (
     <div className="max-w-6xl mx-auto p-4">
       <Helmet>
-          <title>RentX | View Property</title> {/* Custom title */}
-        <meta name="description" content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy." />
+          <title>StayX | View Property</title> {/* Custom title */}
+        <meta name="description" content="Find your dream rental home on StayX. Explore verified listings, compare properties, and make your move easy." />
       </Helmet>
       <div className="flex flex-col lg:flex-row">
         {/* Left Side: Image Slider */}

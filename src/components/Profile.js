@@ -168,8 +168,8 @@ const Profile = () => {
   return (
     <div className="bg-white p-8 shadow-lg rounded-lg max-w-md mx-auto mt-10 relative">
       <Helmet>
-          <title>RentX | Profile</title> {/* Custom title */}
-        <meta name="description" content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy." />
+          <title>StayX | Profile</title> {/* Custom title */}
+        <meta name="description" content="Find your dream rental home on StayX. Explore verified listings, compare properties, and make your move easy." />
       </Helmet>
       <div className="flex items-center justify-center mb-4">
         <img

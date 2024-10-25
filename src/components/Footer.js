@@ -9,11 +9,11 @@ const Footer = () => {
         {/* About Us Section */}
         <div className="md:col-span-1">
           <div className="flex items-center space-x-3 mb-6">
-            <img src="/images/logo.jpg" alt="RentX Logo" className="w-14 h-14" />
-            <h2 className="text-3xl font-bold">RentX</h2>
+            <img src="/images/logo.jpg" alt="StayX Logo" className="w-14 h-14" />
+            <h2 className="text-3xl font-bold">StayX</h2>
           </div>
           <p className="text-gray-400 text-sm">
-            RentX is the easiest platform to find verified rental properties. We offer high-quality listings with 
+            StayX is the easiest platform to find verified rental properties. We offer high-quality listings with 
             accurate details to ensure a smooth rental experience in your city.
           </p>
         </div>
@@ -56,9 +56,9 @@ const Footer = () => {
 
       {/* Bottom Section */}
       <div className="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-500">
-        <p>&copy; 2024 RentX. All rights reserved.</p>
+        <p>&copy; 2024 StayX. All rights reserved.</p>
         <p className="mt-2">
-          Designed with ❤️ by RentX Team 
+          Designed with ❤️ by StayX Team 
         </p>
       </div>
     </footer>

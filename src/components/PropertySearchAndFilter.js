@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import PropertyCard from "./PropertyCard";
 import config from "../configs/config";
@@ -15,17 +15,17 @@ const PropertySearchAndFilter = () => {
   const [sortOrder, setSortOrder] = useState("Low to High");
   const [properties, setProperties] = useState([]);
   const [filteredProperties, setFilteredProperties] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state
-  const [bedroomFacilityId, setBedroomFacilityId] = useState(null); // Bedroom facility ID
+  const [loading, setLoading] = useState(true);
+  const [visibleProperties, setVisibleProperties] = useState(3); // State for visible properties
+  const [bedroomFacilityId, setBedroomFacilityId] = useState(null);
   const { loggedIn } = useContext(UserContext);
 
-  // Fetch all categories, properties, and facilities from the API
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await fetch(`${config.baseUrl}/categories/`, {
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
         });
         const data = await response.json();
         setCategories(data);
@@ -37,28 +37,29 @@ const PropertySearchAndFilter = () => {
     const fetchProperties = async () => {
       try {
         const response = await fetch(`${config.baseUrl}/properties/`, {
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
         });
         const data = await response.json();
         setProperties(data);
-        setFilteredProperties(data); // Initialize filtered properties with all properties
+        setFilteredProperties(data);
       } catch (error) {
         console.error("Error fetching properties:", error);
       } finally {
-        setLoading(false); // Set loading to false after fetching
+        setLoading(false);
       }
     };
 
     const fetchFacilities = async () => {
       try {
         const response = await fetch(`${config.baseUrl}/facilities/`, {
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
         });
         const data = await response.json();
-        // Find the facility with the name "Bedroom"
-        const bedroomFacility = data.find(facility => facility.name === "Bedroom");
+        const bedroomFacility = data.find(
+          (facility) => facility.name === "Bedroom"
+        );
         setBedroomFacilityId(bedroomFacility ? bedroomFacility._id : null);
       } catch (error) {
         console.error("Error fetching facilities:", error);
@@ -74,18 +75,26 @@ const PropertySearchAndFilter = () => {
     navigate(`/property/${id}`);
   };
 
-  // Handle search and filtering
   const handleSearch = () => {
     const filtered = properties.filter((property) => {
-      const matchesCity = city === "Any" || property.city.toLowerCase().includes(city.toLowerCase());
-      const matchesCategory = category === "Any" || property.category.name === category;
-      const matchesBedrooms = bedrooms === "" || (bedroomFacilityId && property.facilities.some(f => f.facility === bedroomFacilityId && Number(f.value) === parseInt(bedrooms)));
+      const matchesCity =
+        city === "Any" ||
+        property.city.toLowerCase().includes(city.toLowerCase());
+      const matchesCategory =
+        category === "Any" || property.category.name === category;
+      const matchesBedrooms =
+        bedrooms === "" ||
+        (bedroomFacilityId &&
+          property.facilities.some(
+            (f) =>
+              f.facility === bedroomFacilityId &&
+              Number(f.value) === parseInt(bedrooms)
+          ));
       const matchesPrice = property.monthlyRent <= priceRange;
-      
+
       return matchesCity && matchesCategory && matchesBedrooms && matchesPrice;
     });
 
-    // Sorting based on price
     const sortedProperties = [...filtered].sort((a, b) => {
       return sortOrder === "Low to High"
         ? a.monthlyRent - b.monthlyRent
@@ -93,16 +102,20 @@ const PropertySearchAndFilter = () => {
     });
 
     setFilteredProperties(sortedProperties);
+    setVisibleProperties(3); // Reset to show 3 properties after each search
   };
 
   const clearFilters = () => {
-    // Clear all filters
     setCity("");
     setCategory("Any");
     setBedrooms("");
     setPriceRange(10000);
     setSortOrder("Low to High");
     handleSearch();
+  };
+
+  const handleSeeMore = () => {
+    setVisibleProperties((prev) => prev + 3); // Show 3 more properties
   };
 
   return (
@@ -169,44 +182,58 @@ const PropertySearchAndFilter = () => {
           </select>
         </div>
         <div className="filter-row">
-          <button className="search-button" onClick={handleSearch}>Search</button>
+          <button className="search-button" onClick={handleSearch}>
+            Search
+          </button>
         </div>
       </div>
 
       <div className="properties-container p-4">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Available Properties</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          Available Properties
+        </h2>
         {loading ? (
-          <CardSkeleton count={6} /> // Show skeletons while loading
+          <CardSkeleton count={6} />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-4 mx-auto max-w-7xl">
-            {filteredProperties.length > 0 ? (
-              filteredProperties.map((property) => (
-                <PropertyCard
-                  key={property._id}
-                  property={{
-                    ...property,
-                    image: property.images[0],  // Use the first image from the array
-                  }}
-                  loggedIn={loggedIn}
-                  onClick={() => handleViewProperty(property._id)} // Handle click
-                />
-              ))
-            ) : (
-              <div className="flex flex-col items-center justify-center text-center py-16">
-                <h3 className="text-2xl font-semibold text-gray-700 mb-2">
-                  No properties found
-                </h3>
-                <p className="text-gray-500 mb-4">
-                  Try adjusting your search criteria or clear filters to see more properties.
-                </p>
-                <button
-                  onClick={clearFilters}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                >
-                  Clear Filters
-                </button>
-              </div>
-            )}
+            {filteredProperties.slice(0, visibleProperties).map((property) => (
+              <PropertyCard
+                key={property._id}
+                property={{
+                  ...property,
+                  image: property.images[0],
+                }}
+                loggedIn={loggedIn}
+                onClick={() => handleViewProperty(property._id)}
+              />
+            ))}
+          </div>
+        )}
+        {!loading && visibleProperties < filteredProperties.length && (
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={handleSeeMore}
+              className="px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-full shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 ease-in-out transform hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-offset-2"
+            >
+              See More
+            </button>
+          </div>
+        )}
+        {!loading && filteredProperties.length === 0 && (
+          <div className="flex flex-col items-center justify-center text-center py-16">
+            <h3 className="text-2xl font-semibold text-gray-700 mb-2">
+              No properties found
+            </h3>
+            <p className="text-gray-500 mb-4">
+              Try adjusting your search criteria or clear filters to see more
+              properties.
+            </p>
+            <button
+              onClick={clearFilters}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Clear Filters
+            </button>
           </div>
         )}
       </div>

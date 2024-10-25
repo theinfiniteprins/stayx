@@ -59,8 +59,8 @@ const FavouriteProperties = () => {
   return (
     <div className="p-4">
       <Helmet>
-        <title>RentX | Favourite Properties</title> {/* Custom title */}
-        <meta name="description" content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy." />
+        <title>StayX | Favourite Properties</title> {/* Custom title */}
+        <meta name="description" content="Find your dream rental home on StayX. Explore verified listings, compare properties, and make your move easy." />
       </Helmet>
       <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">My Favourite Properties</h2>
       {loading ? (

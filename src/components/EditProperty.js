@@ -161,8 +161,8 @@ const EditProperty = () => {
   return (
     <div className="container mx-auto p-6">
       <Helmet>
-          <title>RentX | Edit Property</title> {/* Custom title */}
-        <meta name="description" content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy." />
+          <title>StayX | Edit Property</title> {/* Custom title */}
+        <meta name="description" content="Find your dream rental home on StayX. Explore verified listings, compare properties, and make your move easy." />
       </Helmet>
       <div className="bg-white p-8 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-4">

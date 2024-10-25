@@ -5,10 +5,10 @@ const PrivacyPolicy = () => {
   return (
     <div className="container mx-auto px-6 py-12 bg-gray-50">
       <Helmet>
-        <title>RentX | Privacy Policy</title> {/* Custom title */}
+        <title>StayX | Privacy Policy</title> {/* Custom title */}
         <meta
           name="description"
-          content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy."
+          content="Find your dream rental home on StayX. Explore verified listings, compare properties, and make your move easy."
         />
       </Helmet>
       <div className="bg-white p-8 shadow-2xl rounded-lg max-w-4xl mx-auto">
@@ -19,7 +19,7 @@ const PrivacyPolicy = () => {
 
         <section className="mb-10">
           <p className="text-lg leading-relaxed text-gray-700">
-            Welcome to RentX. This Privacy Policy explains how we collect, use,
+            Welcome to StayX. This Privacy Policy explains how we collect, use,
             disclose, and safeguard your information when you visit our
             platform. By accessing the website, you agree to this Privacy
             Policy.

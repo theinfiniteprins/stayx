@@ -9,8 +9,8 @@ const Home = () => {
   return (
     <div className="home-container">
       <Helmet>
-          <title>RentX</title> {/* Custom title */}
-        <meta name="description" content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy." />
+          <title>StayX</title> {/* Custom title */}
+        <meta name="description" content="Find your dream rental home on StayX. Explore verified listings, compare properties, and make your move easy." />
       </Helmet>
       {/* Property Slider Section */}
       <PropertySlider />

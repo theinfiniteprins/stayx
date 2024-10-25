@@ -87,10 +87,10 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-left" onClick={handleLogoClick}>
-        <img src="/images/logo.jpg" alt="RentX Logo" className="navbar-logo" />
+        <img src="/images/logo.jpg" alt="StayX Logo" className="navbar-logo" />
       </div>
       <div className="navbar-center">
-        <h1 className="navbar-title">RentX</h1>
+        <h1 className="navbar-title">StayX</h1>
       </div>
       <div className="navbar-right">
         {/* Conditional rendering based on authentication status */}

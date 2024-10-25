@@ -5,10 +5,10 @@ const TermsAndConditions = () => {
   return (
     <div className="container mx-auto px-6 py-12 bg-gray-50">
       <Helmet>
-        <title>RentX | Terms & Conditions</title> {/* Custom title */}
+        <title>StayX | Terms & Conditions</title> {/* Custom title */}
         <meta
           name="description"
-          content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy."
+          content="Find your dream rental home on StayX. Explore verified listings, compare properties, and make your move easy."
         />
       </Helmet>
       <div className="bg-white p-8 shadow-2xl rounded-lg max-w-4xl mx-auto">
@@ -19,7 +19,7 @@ const TermsAndConditions = () => {
 
         <section className="mb-10">
           <p className="text-lg leading-relaxed text-gray-700">
-            These terms govern your use of RentX. By accessing the platform, you
+            These terms govern your use of StayX. By accessing the platform, you
             agree to comply with these terms.
           </p>
         </section>
@@ -61,7 +61,7 @@ const TermsAndConditions = () => {
           </Accordion>
           <Accordion title="Limitation of Liability">
             <p className="text-gray-700">
-              RentX is not liable for any direct, indirect, incidental, or
+              StayX is not liable for any direct, indirect, incidental, or
               consequential damages arising from your use of the platform.
             </p>
           </Accordion>
