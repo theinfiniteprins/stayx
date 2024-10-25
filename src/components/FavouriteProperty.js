@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import PropertyCard from "./PropertyCard";
-import Skeleton from "./Skeleton"; // Import Skeleton instead of Spinner
+import CardSkeleton from "../Skeletons/CardSkeleton"; // Import Skeleton instead of Spinner
 import config from "../configs/config";
 import { Helmet } from 'react-helmet-async';
 import { UserContext } from "../contexts/UserContext";
@@ -62,9 +62,9 @@ const FavouriteProperties = () => {
         <title>RentX | Favourite Properties</title> {/* Custom title */}
         <meta name="description" content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy." />
       </Helmet>
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">Your Favourite Properties</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">My Favourite Properties</h2>
       {loading ? (
-        <Skeleton count={6} /> 
+        <CardSkeleton count={6} /> 
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-4 mx-auto max-w-7xl">
           {favouriteProperties.length > 0 ? (

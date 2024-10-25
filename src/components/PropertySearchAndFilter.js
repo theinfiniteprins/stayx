@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext} from "react";
 import { useNavigate } from "react-router-dom";
 import PropertyCard from "./PropertyCard";
 import config from "../configs/config";
-import Skeleton from "./Skeleton"; // Skeleton loader
+import CardSkeleton from "../Skeletons/CardSkeleton"; // Skeleton loader
 import { UserContext } from "../contexts/UserContext";
 
 const PropertySearchAndFilter = () => {
@@ -176,7 +176,7 @@ const PropertySearchAndFilter = () => {
       <div className="properties-container p-4">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Available Properties</h2>
         {loading ? (
-          <Skeleton count={6} /> // Show skeletons while loading
+          <CardSkeleton count={6} /> // Show skeletons while loading
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-4 mx-auto max-w-7xl">
             {filteredProperties.length > 0 ? (

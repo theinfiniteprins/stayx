@@ -3,7 +3,7 @@ import Slider from "react-slick";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import config from "../configs/config";
-import Spinner from "./SliderSpinner";
+import SliderSkeleton from "../Skeletons/SliderSkeleton"; // Import the skeleton
 
 const PreviousArrow = ({ className, style, onClick }) => (
   <div className={`${className} custom-arrow-left`} style={{ ...style }} onClick={onClick}></div>
@@ -54,7 +54,7 @@ const PropertySlider = () => {
     <div className="slider-container">
       {loading ? (
         <div className="loading-container">
-          <Spinner /> {/* Show spinner while loading */}
+            <SliderSkeleton />
         </div>
       ) : (
         <Slider {...settings}>

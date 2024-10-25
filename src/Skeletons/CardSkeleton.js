@@ -1,6 +1,6 @@
 import React from "react";
 
-const Skeleton = () => {
+const CardSkeleton = () => {
   const skeletonItems = [];
   for (let i = 0; i < 6; i++) {
     skeletonItems.push(
@@ -35,4 +35,4 @@ const Skeleton = () => {
   );
 };
 
-export default Skeleton;
+export default CardSkeleton;

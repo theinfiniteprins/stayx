@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEdit, FaTrashAlt, FaHeart } from "react-icons/fa";
-import Spinner from "./Spinner";
 import ConfirmationModal from "./ConfirmationModal";
-import config from "../configs/config";
+import ListSkeleton from "../Skeletons/ListSkeleton"; // Import the skeleton component
 import axios from "axios";
 import { Helmet } from 'react-helmet-async';
+import config from "../configs/config";
 
 const MyProperties = () => {
   const [properties, setProperties] = useState([]);
@@ -82,12 +82,11 @@ const MyProperties = () => {
           <title>RentX | My Properties</title> {/* Custom title */}
         <meta name="description" content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy." />
       </Helmet>
-      <h1 className="text-2xl font-bold m-4">My Properties</h1>
+      <h1 className="text-2xl font-bold m-4 text-center">My Properties</h1>
       <div className="grid grid-cols-1 gap-6">
-        {loading || properties.length <= 0 ? ( // Show loading spinner if loading
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-50 z-50">
-            <Spinner />
-          </div>
+        {loading || properties.length <= 0 ? (
+          // Render the skeleton loader if loading is true
+          <ListSkeleton /> // Skeleton loader component
         ) : (
           // Show properties if not loading and properties exist
           properties.map((property) => (

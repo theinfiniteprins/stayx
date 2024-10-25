@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import PropertyCard from "./PropertyCard";
 import config from "../configs/config";
-import Skeleton from "./Skeleton";
+import CardSkeleton from "../Skeletons/CardSkeleton";
 import { UserContext } from "../contexts/UserContext";
 
 const MostLiked = () => {
@@ -34,7 +34,7 @@ const MostLiked = () => {
     <div className="p-4">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Most Liked Properties</h2>
       {loading ? (
-        <Skeleton count={6} />
+        <CardSkeleton count={6} />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-4 mx-auto max-w-7xl">
           {mostLikedProperties.length > 0 ? (
