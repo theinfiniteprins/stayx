@@ -21,6 +21,7 @@ import Footer from "./components/Footer";
 import AboutUs from "./components/AboutUs";
 import "./styles.css";
 import { HelmetProvider } from 'react-helmet-async';
+import { UserProvider } from "./contexts/UserContext";
 
 // This component contains the logic for showing/hiding the Footer based on the route
 const MainLayout = () => {
@@ -42,7 +43,7 @@ const MainLayout = () => {
       <HelmetProvider>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={  <Home />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route
             path="/terms-and-conditions"
@@ -55,7 +56,7 @@ const MainLayout = () => {
           <Route path="/upload-property" element={<UploadProperty />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/favourites" element={<FavouriteProperties />} />
-          <Route path="/myproperties" element={<MyProperties />} />
+          <Route path="/myproperties" element={ <MyProperties />} />
           <Route path="/edit/:id" element={<EditProperty />} />
         </Routes>
         {/* Conditionally render the Footer only on Home, Terms and Conditions, and Privacy Policy pages */}
@@ -69,7 +70,9 @@ const MainLayout = () => {
 const App = () => {
   return (
     <Router>
-      <MainLayout />
+      <UserProvider>
+        <MainLayout />
+      </UserProvider>
     </Router>
   );
 };

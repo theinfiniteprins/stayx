@@ -1,76 +1,62 @@
 import React, { useState, useEffect } from "react";
 import config from "../configs/config";
 
-const PropertyCard = ({ property, onClick }) => {
+const PropertyCard = ({ property, loggedIn, onClick }) => {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(property.likeCount);
-  const [isLoading, setIsLoading] = useState(false); // Loading state for the like button
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Check if the property is liked when the component mounts
-    const checkIfLiked = async () => {
-      try {
-        const response = await fetch(
-          `${config.baseUrl}/auth/currentuser`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
+    // Check if the property is liked on mount (only if logged in)
+    if (loggedIn) {
+      const checkIfLiked = async () => {
+        try {
+          const response = await fetch(
+            `${config.baseUrl}/auth/currentuser`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              credentials: "include",
+            }
+          );
+          const currentUser = await response.json();
+          if (
+            currentUser.favouriteProperties &&
+            currentUser.favouriteProperties.some((fav) => fav === property._id)
+          ) {
+            setLiked(true);
           }
-        );
-        const currentUser = await response.json();
-        if (
-          currentUser.favouriteProperties &&
-          currentUser.favouriteProperties.some((fav) => fav === property._id)
-        ) {
-          setLiked(true);
+        } catch (error) {
+          console.error("Error checking if property is liked:", error);
         }
-      } catch (error) {
-        console.error("Error checking if property is liked:", error);
-      }
-    };
-
-    checkIfLiked();
-  }, [property._id]);
+      };
+      checkIfLiked();
+    }
+  }, [loggedIn, property._id]);
 
   const handleLikeToggle = async () => {
-    setIsLoading(true); // Set loading state to true
+    setIsLoading(true);
     try {
-      if (liked) {
-        // Dislike the property
-        await fetch(
-          `${config.baseUrl}/properties/${property._id}/dislike`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-          }
-        );
-        setLikeCount(likeCount - 1);
-      } else {
-        // Like the property
-        await fetch(
-          `${config.baseUrl}/properties/${property._id}/like`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-          }
-        );
-        setLikeCount(likeCount + 1);
-      }
+      const endpoint = liked
+        ? `${config.baseUrl}/properties/${property._id}/dislike`
+        : `${config.baseUrl}/properties/${property._id}/like`;
 
-      setLiked(!liked); // Toggle the liked state
+      await fetch(endpoint, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      setLikeCount(likeCount + (liked ? -1 : 1));
+      setLiked(!liked);
     } catch (error) {
       console.error("Error liking/disliking the property:", error);
     } finally {
-      setIsLoading(false); // Set loading state to false after API call
+      setIsLoading(false);
     }
   };
 
@@ -80,7 +66,6 @@ const PropertyCard = ({ property, onClick }) => {
       onClick={onClick}
       style={{ cursor: "pointer" }}
     >
-      {/* Property Image */}
       <div className="relative">
         <img
           src={property.image}
@@ -92,26 +77,27 @@ const PropertyCard = ({ property, onClick }) => {
           ₹{property.monthlyRent}/month
         </div>
 
-        {/* Heart icon in the top-right corner */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation(); // Prevent triggering onClick of the card
-            handleLikeToggle();
-          }}
-          className={`absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center transition-transform transform ${
-            liked ? "bg-pink-500 text-white" : "bg-gray-200 text-gray-700"
-          } shadow-md hover:scale-110`}
-          disabled={isLoading} // Disable the button while loading
-        >
-          {isLoading ? (
-            <i className="fas fa-spinner fa-spin text-lg text-white" />
-          ) : (
-            <i className={`fas fa-heart text-lg ${liked ? "text-white" : "text-gray-500"}`} />
-          )}
-        </button>
+        {/* Render like button only if loggedIn is true */}
+        {loggedIn && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleLikeToggle();
+            }}
+            className={`absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center transition-transform transform ${
+              liked ? "bg-pink-500 text-white" : "bg-gray-200 text-gray-700"
+            } shadow-md hover:scale-110`}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <i className="fas fa-spinner fa-spin text-lg text-white" />
+            ) : (
+              <i className={`fas fa-heart text-lg ${liked ? "text-white" : "text-gray-500"}`} />
+            )}
+          </button>
+        )}
       </div>
 
-      {/* Property Details */}
       <div className="p-4 bg-gray-50 rounded-b-lg">
         <h3 className="text-xl font-bold text-teal-700 mb-1">{property.title}</h3>
         <p className="text-gray-500 mb-3 flex items-center">
@@ -120,10 +106,8 @@ const PropertyCard = ({ property, onClick }) => {
         </p>
         <hr className="my-3" />
 
-        {/* Facilities and Like Count */}
         <div className="flex justify-between items-center">
           <div className="text-sm text-gray-600 space-y-1">
-            {/* Use flex to display facilities side by side */}
             <div className="flex space-x-4">
               {property.facilities.slice(0, 2).map((facility, index) => (
                 <p className="flex items-center text-lg font-semibold mr-5" key={index}>

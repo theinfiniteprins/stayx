@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext} from "react";
 import { useNavigate } from "react-router-dom";
 import PropertyCard from "./PropertyCard";
 import config from "../configs/config";
 import Skeleton from "./Skeleton"; // Skeleton loader
+import { UserContext } from "../contexts/UserContext";
 
 const PropertySearchAndFilter = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const PropertySearchAndFilter = () => {
   const [filteredProperties, setFilteredProperties] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
   const [bedroomFacilityId, setBedroomFacilityId] = useState(null); // Bedroom facility ID
+  const { loggedIn } = useContext(UserContext);
 
   // Fetch all categories, properties, and facilities from the API
   useEffect(() => {
@@ -185,6 +187,7 @@ const PropertySearchAndFilter = () => {
                     ...property,
                     image: property.images[0],  // Use the first image from the array
                   }}
+                  loggedIn={loggedIn}
                   onClick={() => handleViewProperty(property._id)} // Handle click
                 />
               ))

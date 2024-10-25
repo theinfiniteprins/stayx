@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import PropertyCard from "./PropertyCard";
 import Spinner from "./Spinner";
 import config from "../configs/config";
 import { Helmet } from 'react-helmet-async';
+import { UserContext } from "../contexts/UserContext";
 
 const FavouriteProperties = () => {
   const [favouriteProperties, setFavouriteProperties] = useState([]);
   const navigate = useNavigate();
+  const { loggedIn } = useContext(UserContext); 
 
   useEffect(() => {
     const fetchFavouriteProperties = async () => {
@@ -67,6 +69,7 @@ const FavouriteProperties = () => {
                 ...property,
                 image: property.images[0],
               }}
+              loggedIn={loggedIn}
               onClick={() => handleViewProperty(property._id)}
             />
           ))

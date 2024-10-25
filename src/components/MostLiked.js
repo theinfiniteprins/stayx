@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import PropertyCard from "./PropertyCard";
 import config from "../configs/config";
-import Skeleton from "./Skeleton"; // Skeleton loader
+import Skeleton from "./Skeleton";
+import { UserContext } from "../contexts/UserContext";
 
 const MostLiked = () => {
   const [mostLikedProperties, setMostLikedProperties] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
+  const { loggedIn } = useContext(UserContext); // Now should be defined correctly
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,12 +18,12 @@ const MostLiked = () => {
         const response = await axios.get(`${config.baseUrl}/properties`);
         const sortedProperties = response.data
           .sort((a, b) => b.likeCount - a.likeCount)
-          .slice(0, 6); 
+          .slice(0, 6);
         setMostLikedProperties(sortedProperties);
       } catch (error) {
         console.error("Error fetching most liked properties:", error);
       } finally {
-        setLoading(false); // Set loading to false after fetching
+        setLoading(false);
       }
     };
 
@@ -32,14 +34,15 @@ const MostLiked = () => {
     <div className="p-4">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Most Liked Properties</h2>
       {loading ? (
-        <Skeleton count={6} /> // Show skeletons while loading
+        <Skeleton count={6} />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {mostLikedProperties.length > 0 ? (
-            mostLikedProperties.map(property => (
+            mostLikedProperties.map((property) => (
               <PropertyCard
                 key={property._id}
                 property={{ ...property, image: property.images[0] }}
+                loggedIn={loggedIn} // Pass loggedIn prop to PropertyCard
                 onClick={() => navigate(`/property/${property._id}`)}
               />
             ))
