@@ -9,7 +9,7 @@ const Footer = () => {
         {/* About Us Section */}
         <div className="md:col-span-1">
           <div className="flex items-center space-x-3 mb-6">
-            <img src="/images/logo.jpg" alt="StayX Logo" className="w-14 h-14" />
+            <img src="/images/logo.png" alt="StayX Logo" className="w-14 h-14" />
             <h2 className="text-3xl font-bold">StayX</h2>
           </div>
           <p className="text-gray-400 text-sm">
