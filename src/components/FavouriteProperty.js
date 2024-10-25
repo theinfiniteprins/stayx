@@ -2,13 +2,14 @@ import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import PropertyCard from "./PropertyCard";
-import Spinner from "./Spinner";
+import Skeleton from "./Skeleton"; // Import Skeleton instead of Spinner
 import config from "../configs/config";
 import { Helmet } from 'react-helmet-async';
 import { UserContext } from "../contexts/UserContext";
 
 const FavouriteProperties = () => {
   const [favouriteProperties, setFavouriteProperties] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
   const navigate = useNavigate();
   const { loggedIn } = useContext(UserContext); 
 
@@ -43,6 +44,8 @@ const FavouriteProperties = () => {
         }
       } catch (error) {
         console.error("Error fetching favourite properties:", error);
+      } finally {
+        setLoading(false); // Ensure loading is set to false after data is fetched
       }
     };
 
@@ -56,29 +59,31 @@ const FavouriteProperties = () => {
   return (
     <div className="p-4">
       <Helmet>
-          <title>RentX | Favourite Properties</title> {/* Custom title */}
+        <title>RentX | Favourite Properties</title> {/* Custom title */}
         <meta name="description" content="Find your dream rental home on RentX. Explore verified listings, compare properties, and make your move easy." />
       </Helmet>
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Your Favourite Properties</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {favouriteProperties.length > 0 ? (
-          favouriteProperties.map((property) => (
-            <PropertyCard
-              key={property._id}
-              property={{
-                ...property,
-                image: property.images[0],
-              }}
-              loggedIn={loggedIn}
-              onClick={() => handleViewProperty(property._id)}
-            />
-          ))
-        ) : (
-          <div className="fixed inset-0 flex justify-center items-center bg-gray-200 bg-opacity-50 z-50">
-            <Spinner />
-          </div>
-        )}
-      </div>
+      {loading ? (
+        <Skeleton count={6} /> 
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-4 mx-auto max-w-7xl">
+          {favouriteProperties.length > 0 ? (
+            favouriteProperties.map((property) => (
+              <PropertyCard
+                key={property._id}
+                property={{
+                  ...property,
+                  image: property.images[0],
+                }}
+                loggedIn={loggedIn}
+                onClick={() => handleViewProperty(property._id)}
+              />
+            ))
+          ) : (
+            <p>No favourite properties found.</p>
+          )}
+        </div>
+      )}
     </div>
   );
 };

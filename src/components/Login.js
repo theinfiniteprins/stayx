@@ -56,7 +56,6 @@ const Login = () => {
       
       // Check if the response is successful
       if (response.ok) {
-        const data = await response.json();
         
         // Store JWT token in the browser's cookie (handled by server if HttpOnly)
         const isSecure = window.location.protocol === 'https:';
@@ -65,6 +64,7 @@ const Login = () => {
         console.log('Login successful');
         setIsLoading(false); 
         navigate('/');
+        window.location.reload();
       } else {
         setIsLoading(false);
 

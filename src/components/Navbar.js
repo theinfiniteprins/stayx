@@ -75,6 +75,7 @@ const Navbar = () => {
         // Clear the `isLogged` cookie
         document.cookie = "isLogged=; path=/; max-age=0; SameSite=Strict"; // Clear the isLogged cookie
         navigate('/'); // Optionally redirect to the home page
+        window.location.reload();
       } else {
         console.error('Failed to log out');
       }

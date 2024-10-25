@@ -178,7 +178,7 @@ const PropertySearchAndFilter = () => {
         {loading ? (
           <Skeleton count={6} /> // Show skeletons while loading
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-4 mx-auto max-w-7xl">
             {filteredProperties.length > 0 ? (
               filteredProperties.map((property) => (
                 <PropertyCard
