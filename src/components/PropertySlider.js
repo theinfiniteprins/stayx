@@ -6,11 +6,19 @@ import config from "../configs/config";
 import SliderSkeleton from "../Skeletons/SliderSkeleton"; // Import the skeleton
 
 const PreviousArrow = ({ className, style, onClick }) => (
-  <div className={`${className} custom-arrow-left`} style={{ ...style }} onClick={onClick}></div>
+  <div
+    className={`${className} custom-arrow-left`}
+    style={{ ...style }}
+    onClick={onClick}
+  ></div>
 );
 
 const NextArrow = ({ className, style, onClick }) => (
-  <div className={`${className} custom-arrow-right`} style={{ ...style }} onClick={onClick}></div>
+  <div
+    className={`${className} custom-arrow-right`}
+    style={{ ...style }}
+    onClick={onClick}
+  ></div>
 );
 
 const PropertySlider = () => {
@@ -23,7 +31,9 @@ const PropertySlider = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${config.baseUrl}/slider/`);
-        const filteredData = response.data.filter(property => property.isActive);
+        const filteredData = response.data.filter(
+          (property) => property.isActive
+        );
         setSliderData(filteredData);
       } catch (error) {
         console.error("Error fetching slider data:", error);
@@ -51,28 +61,34 @@ const PropertySlider = () => {
   };
 
   return (
-    <div className="slider-container">
+    <div className="slider-container w-screen relative mx-auto">
       {loading ? (
         <div className="loading-container">
-            <SliderSkeleton />
+          <SliderSkeleton />
         </div>
       ) : (
-        <Slider {...settings}>
+        <Slider {...settings} className="w-full">
           {sliderData.map(({ _id, property }) => (
             <div
-              className="slider-item"
+              className="slider-item relative cursor-pointer"
               key={_id}
               onClick={() => handleViewProperty(property._id)}
             >
               <img
-                src={property.images[0]} 
+                src={property.images[0]}
                 alt={property.title}
-                className="slider-image"
+                className="w-full h-[400px] object-cover"
               />
-              <div className="property-details">
-                <h3>{property.title}</h3>
-                <p>{property.city}, {property.state}</p>
-                <p>Price: ₹{property.monthlyRent}</p>
+              <div className="absolute bottom-2 left-2 w-44 bg-white bg-opacity-80 p-2 rounded-lg shadow-md">
+                <h3 className="text-lg text-teal-600 font-semibold truncate">
+                  {property.title}
+                </h3>
+                <p className="text-sm text-gray-800 truncate">
+                  {property.city}, {property.state}
+                </p>
+                <p className="text-sm text-gray-800 truncate">
+                  Price: ₹{property.monthlyRent}
+                </p>
               </div>
             </div>
           ))}

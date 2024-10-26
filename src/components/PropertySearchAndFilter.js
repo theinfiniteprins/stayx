@@ -16,7 +16,7 @@ const PropertySearchAndFilter = () => {
   const [properties, setProperties] = useState([]);
   const [filteredProperties, setFilteredProperties] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [visibleProperties, setVisibleProperties] = useState(3); // State for visible properties
+  const [visibleProperties, setVisibleProperties] = useState(3);
   const [bedroomFacilityId, setBedroomFacilityId] = useState(null);
   const { loggedIn } = useContext(UserContext);
 
@@ -102,7 +102,7 @@ const PropertySearchAndFilter = () => {
     });
 
     setFilteredProperties(sortedProperties);
-    setVisibleProperties(3); // Reset to show 3 properties after each search
+    setVisibleProperties(3);
   };
 
   const clearFilters = () => {
@@ -115,29 +115,31 @@ const PropertySearchAndFilter = () => {
   };
 
   const handleSeeMore = () => {
-    setVisibleProperties((prev) => prev + 3); // Show 3 more properties
+    setVisibleProperties((prev) => prev + 3);
   };
 
   return (
     <div className="search-and-property-container">
-      <div className="search-filter-container">
-        <div className="filter-row">
-          <div className="filter-item">
-            <label htmlFor="city">City:</label>
+      <div className="mx-auto my-5 p-5 max-w-2xl bg-gray-100 rounded-xl shadow-2xl font-sans">
+        <div className="flex flex-wrap justify-between mb-4">
+          <div className="flex-1 mx-3 min-w-[150px]">
+            <label htmlFor="city" className="block mb-2 text-gray-800 font-bold text-sm">City:</label>
             <input
               type="text"
               id="city"
               placeholder="Any"
               value={city}
               onChange={(e) => setCity(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md text-gray-800 text-lg"
             />
           </div>
-          <div className="filter-item">
-            <label htmlFor="category">Category:</label>
+          <div className="flex-1 mx-3 min-w-[150px]">
+            <label htmlFor="category" className="block mb-2 text-gray-800 font-bold text-sm">Category:</label>
             <select
               id="category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md text-gray-800 text-lg bg-gray-100 focus:border-teal-700"
             >
               <option value="Any">Any</option>
               {categories.map((cat) => (
@@ -147,8 +149,8 @@ const PropertySearchAndFilter = () => {
               ))}
             </select>
           </div>
-          <div className="filter-item">
-            <label htmlFor="bedrooms">Bedrooms:</label>
+          <div className="flex-1 mx-3 min-w-[150px]">
+            <label htmlFor="bedrooms" className="block mb-2 text-gray-800 font-bold text-sm">Bedrooms:</label>
             <input
               type="number"
               id="bedrooms"
@@ -156,46 +158,55 @@ const PropertySearchAndFilter = () => {
               value={bedrooms}
               onChange={(e) => setBedrooms(e.target.value)}
               min="1"
+              className="w-full p-2 border border-gray-300 rounded-md text-gray-800 text-lg"
             />
           </div>
         </div>
-        <div className="filter-row">
-          <label htmlFor="priceRange">Price Range: ₹{priceRange}</label>
+        <div className="flex flex-wrap justify-between mb-4">
+          <label htmlFor="priceRange" className="block w-full mb-2 text-gray-800 font-bold text-sm">Price Range: ₹0 - ₹{priceRange}</label>
           <input
             type="range"
             id="priceRange"
-            min="0"
+            min="500"
             max="20000"
             value={priceRange}
             onChange={(e) => setPriceRange(e.target.value)}
+            className="w-full h-2 rounded-lg appearance-none"
+            style={{
+              background: `linear-gradient(to right, #005cc8 ${(priceRange - 500) / 195}% , #e2e8f0 ${(priceRange - 500) / 195}%)`,
+            }}
           />
         </div>
-        <div className="filter-row">
-          <label htmlFor="sortOrder">Sort By Price:</label>
+        <div className="flex flex-wrap justify-between mb-4">
+          <label htmlFor="sortOrder" className="block w-full mb-2 text-gray-800 font-bold text-sm">Sort By Price:</label>
           <select
             id="sortOrder"
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-md text-gray-800 text-lg bg-gray-100 focus:border-teal-700"
           >
             <option value="Low to High">Low to High</option>
             <option value="High to Low">High to Low</option>
           </select>
         </div>
-        <div className="filter-row">
-          <button className="search-button" onClick={handleSearch}>
+        <div className="flex justify-center">
+          <button
+            onClick={handleSearch}
+            className="bg-teal-600 hover:bg-teal-800 text-white font-bold py-3 px-5 rounded-md transition-colors duration-300 w-full"
+          >
             Search
           </button>
         </div>
       </div>
 
-      <div className="properties-container p-4">
+      <div className="p-4">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">
           Available Properties
         </h2>
         {loading ? (
           <CardSkeleton count={6} />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-4 mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredProperties.slice(0, visibleProperties).map((property) => (
               <PropertyCard
                 key={property._id}
@@ -213,7 +224,7 @@ const PropertySearchAndFilter = () => {
           <div className="flex justify-center mt-4">
             <button
               onClick={handleSeeMore}
-              className="px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-full shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 ease-in-out transform hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-offset-2"
+              className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-full px-6 py-2 shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-transform transform hover:-translate-y-1"
             >
               See More
             </button>
@@ -225,12 +236,11 @@ const PropertySearchAndFilter = () => {
               No properties found
             </h3>
             <p className="text-gray-500 mb-4">
-              Try adjusting your search criteria or clear filters to see more
-              properties.
+              Try adjusting your search criteria or clear filters to see more properties.
             </p>
             <button
               onClick={clearFilters}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="bg-blue-600 text-white rounded-lg px-6 py-2 hover:bg-blue-700"
             >
               Clear Filters
             </button>

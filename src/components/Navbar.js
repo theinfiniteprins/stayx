@@ -1,19 +1,24 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import '../styles.css';
-import { FaUser, FaHome, FaHeart, FaFileAlt, FaLock, FaSignOutAlt } from 'react-icons/fa';
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  FaUser,
+  FaHome,
+  FaHeart,
+  FaFileAlt,
+  FaLock,
+  FaSignOutAlt,
+} from "react-icons/fa";
 import config from "../configs/config";
-import { getCookie } from '../utils/getCookie'; // Import the getCookie utility
+import { getCookie } from "../utils/getCookie";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const menuIconRef = useRef(null);
   const navigate = useNavigate();
-  
-  // Use `isLogged` cookie to check if the user is authenticated
-  const isLogged = getCookie('isLogged'); // Get the isLogged cookie
-  const isAuthenticated = isLogged === 'true'; // Check if the isLogged cookie exists and is set to 'true'
+
+  const isLogged = getCookie("isLogged");
+  const isAuthenticated = isLogged === "true";
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -21,111 +26,178 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target) && menuIconRef.current && 
-      !menuIconRef.current.contains(event.target)) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        menuIconRef.current &&
+        !menuIconRef.current.contains(event.target)
+      ) {
         setMenuOpen(false);
       }
     };
 
     if (menuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [menuOpen]);
 
   const handleLogoClick = () => {
-    navigate('/');
+    navigate("/");
   };
 
   const handleProfileClick = () => {
-    navigate('/profile');
+    navigate("/profile");
   };
 
   const handleLoginClick = () => {
-    navigate('/login');
+    navigate("/login");
   };
 
-  const handleFavourtiesClick = () => {
-    navigate('/favourites');
+  const handleFavouritesClick = () => {
+    navigate("/favourites");
   };
 
   const handleMyPropertiesClick = () => {
-    navigate('/myproperties');
+    navigate("/myproperties");
   };
 
   const handlePrivacyPolicyClick = () => {
-    navigate('/privacy-policy');
+    navigate("/privacy-policy");
   };
 
   const handleTermsAndConditionsClick = () => {
-    navigate('/terms-and-conditions');
+    navigate("/terms-and-conditions");
   };
 
   const handleSignOut = async () => {
     try {
       const response = await fetch(`${config.baseUrl}/auth/signout`, {
-        method: 'GET',
-        credentials: 'include', // to send cookies
+        method: "GET",
+        credentials: "include",
       });
 
       if (response.ok) {
-        // Clear the `isLogged` cookie
-        document.cookie = "isLogged=; path=/; max-age=0; SameSite=Strict"; // Clear the isLogged cookie
-        navigate('/'); // Optionally redirect to the home page
+        document.cookie = "isLogged=; path=/; max-age=0; SameSite=Strict";
+        navigate("/");
         window.location.reload();
       } else {
-        console.error('Failed to log out');
+        console.error("Failed to log out");
       }
     } catch (error) {
-      console.error('Error during sign out:', error);
+      console.error("Error during sign out:", error);
     }
   };
 
   return (
-    <nav className="navbar">
-      <div className="navbar-left" onClick={handleLogoClick}>
-        <img src="/images/logo.png" alt="StayX Logo" className="navbar-logo" />
+    <nav className="flex justify-between items-center py-2 px-4 shadow-md text-white" style={{ backgroundColor: '#008080' }}>
+      <div
+        className="flex items-center cursor-pointer"
+        onClick={handleLogoClick}
+      >
+        <img
+          src="/images/logo.png"
+          alt="StayX Logo"
+          className="w-12 h-12 rounded-lg border-2 border-white shadow-md"
+        />
       </div>
-      <div className="navbar-center">
-        <h1 className="navbar-title">StayX</h1>
+      <div className="text-center">
+        <h1 className="text-xl font-semibold">StayX</h1>
       </div>
-      <div className="navbar-right">
-        {/* Conditional rendering based on authentication status */}
+      <div className="flex items-center">
         {isAuthenticated ? (
-          <Link to="/upload-property" className="upload-box">
-            <span className="upload-plus">➕</span>
-            <span className="upload-text">Upload Property</span>
+          <Link
+            to="/upload-property"
+            className="flex items-center bg-white text-black px-2 py-1 rounded mr-2 hover:bg-gray-200"
+          >
+            <span className="text-lg mr-1">➕</span>
+            <span className="text-base">Upload Property</span>
           </Link>
         ) : (
-          <div className="upload-box" onClick={handleLoginClick}>
-            <span className="upload-plus">🔑</span>
-            <span className="upload-text">Login/Register</span>
+          <div
+            className="flex items-center bg-white text-black px-2 py-1 rounded mr-2 cursor-pointer hover:bg-gray-200"
+            onClick={handleLoginClick}
+          >
+            <span className="text-lg mr-1">🔑</span>
+            <span className="text-base">Login/Register</span>
           </div>
         )}
 
-        <div className="menu-icon-container" onClick={toggleMenu} ref={menuIconRef}>
-          <i className="menu-icon">{menuOpen ? '✖' : '☰'}</i>
+        <div
+          className="flex justify-center items-center w-10 h-10 border border-white rounded-full cursor-pointer"
+          onClick={toggleMenu}
+          ref={menuIconRef}
+        >
+          <i className="text-2xl not-italic">{menuOpen ? "✖" : "☰"}</i>
         </div>
 
         {/* Dropdown menu */}
-        <div className={`dropdown-menu ${menuOpen ? 'open' : ''}`} ref={menuRef}>
-          <ul>
+        <div
+          className={`absolute right-2 top-14 p-3 border border-gray-300 rounded-md bg-white shadow-md 
+          transition-opacity transform ${
+            menuOpen
+              ? "opacity-100 translate-y-0 pointer-events-auto"
+              : "opacity-0 -translate-y-2 pointer-events-none"
+          } z-50`}
+          ref={menuRef}
+        >
+          <ul className="list-none m-0 p-0">
             {isAuthenticated ? (
               <>
-                <li onClick={handleProfileClick}><FaUser /> Profile</li>
-                <li onClick={handleMyPropertiesClick}><FaHome /> My Properties</li>
-                <li onClick={handleFavourtiesClick}><FaHeart /> Favorites</li>
-                <li onClick={handleTermsAndConditionsClick}><FaFileAlt /> Terms and Conditions</li>
-                <li onClick={handlePrivacyPolicyClick}><FaLock /> Privacy Policy</li>
-                <li onClick={handleSignOut}><FaSignOutAlt /> Sign Out</li>
+                <li
+                  className="flex items-center p-2 cursor-pointer text-black hover:bg-gray-100"
+                  onClick={handleProfileClick}
+                >
+                  <FaUser className="mr-2" /> Profile
+                </li>
+                <li
+                  className="flex items-center p-2 cursor-pointer text-black hover:bg-gray-100"
+                  onClick={handleMyPropertiesClick}
+                >
+                  <FaHome className="mr-2" /> My Properties
+                </li>
+                <li
+                  className="flex items-center p-2 cursor-pointer text-black hover:bg-gray-100"
+                  onClick={handleFavouritesClick}
+                >
+                  <FaHeart className="mr-2" /> Favorites
+                </li>
+                <li
+                  className="flex items-center p-2 cursor-pointer text-black hover:bg-gray-100"
+                  onClick={handleTermsAndConditionsClick}
+                >
+                  <FaFileAlt className="mr-2" /> Terms and Conditions
+                </li>
+                <li
+                  className="flex items-center p-2 cursor-pointer text-black hover:bg-gray-100"
+                  onClick={handlePrivacyPolicyClick}
+                >
+                  <FaLock className="mr-2" /> Privacy Policy
+                </li>
+                <li
+                  className="flex items-center p-2 cursor-pointer text-black hover:bg-gray-100"
+                  onClick={handleSignOut}
+                >
+                  <FaSignOutAlt className="mr-2" /> Sign Out
+                </li>
               </>
             ) : (
               <>
-                <li onClick={handleTermsAndConditionsClick}><FaFileAlt /> Terms and Conditions</li>
-                <li onClick={handlePrivacyPolicyClick}><FaLock /> Privacy Policy</li>
+                <li
+                  className="flex items-center p-2 cursor-pointer text-black hover:bg-gray-100"
+                  onClick={handleTermsAndConditionsClick}
+                >
+                  <FaFileAlt className="mr-2" /> Terms and Conditions
+                </li>
+                <li
+                  className="flex items-center p-2 cursor-pointer text-black hover:bg-gray-100"
+                  onClick={handlePrivacyPolicyClick}
+                >
+                  <FaLock className="mr-2" /> Privacy Policy
+                </li>
               </>
             )}
           </ul>
