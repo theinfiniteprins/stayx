@@ -7,7 +7,6 @@ const PropertyCard = ({ property, loggedIn, onClick }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Check if the property is liked on mount (only if logged in)
     if (loggedIn) {
       const checkIfLiked = async () => {
         try {
@@ -62,22 +61,20 @@ const PropertyCard = ({ property, loggedIn, onClick }) => {
 
   return (
     <div
-      className="w-96 bg-white border border-gray-300 shadow-lg rounded-lg overflow-hidden p-4 m-4 hover:shadow-xl transition-shadow duration-300"
+      className="bg-white border border-gray-300 shadow-lg rounded-lg overflow-hidden p-4 hover:shadow-xl transition-shadow duration-300"
       onClick={onClick}
-      style={{ cursor: "pointer" }}
+      style={{ cursor: "pointer", maxWidth: "100%" }}
     >
       <div className="relative">
         <img
           src={property.image}
           alt={property.title}
-          className="w-full h-48 object-cover rounded-t-lg"
-          style={{ objectFit: "cover", height: "200px", width: "100%" }}
+          className="w-full h-36 object-cover rounded-t-lg sm:h-48" // Height adjusted for mobile
         />
         <div className="absolute top-0 left-0 bg-gradient-to-r from-teal-500 via-green-500 to-teal-500 text-white text-lg px-5 py-2 rounded-br-lg font-semibold shadow-md">
           ₹{property.monthlyRent}/month
         </div>
 
-        {/* Render like button only if loggedIn is true */}
         {loggedIn && (
           <button
             onClick={(e) => {
