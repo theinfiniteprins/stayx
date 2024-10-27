@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEdit, FaTrashAlt, FaHeart } from "react-icons/fa";
-import ConfirmationModal from "./ConfirmationModal";
+import ConfirmationModal from "./static/ConfirmationModal";
 import ListSkeleton from "../Skeletons/ListSkeleton"; // Import the skeleton component
 import axios from "axios";
 import { Helmet } from 'react-helmet-async';

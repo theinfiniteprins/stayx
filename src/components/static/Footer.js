@@ -4,10 +4,10 @@ import { FaFacebookF, FaTwitter, FaInstagram, FaGlobe, FaYoutube, FaBehance } fr
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white py-12">
-      <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
+      <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
         
         {/* About Us Section */}
-        <div className="md:col-span-1">
+        <div className="md:col-span-1 lg:col-span-1">
           <div className="flex items-center space-x-3 mb-6">
             <img src="/images/logo.png" alt="StayX Logo" className="w-14 h-14" />
             <h2 className="text-3xl font-bold">StayX</h2>
@@ -19,7 +19,7 @@ const Footer = () => {
         </div>
 
         {/* Navigation Links Section */}
-        <div className="md:col-span-1">
+        <div className="md:col-span-1 lg:col-span-1">
           <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
           <ul className="space-y-2 text-sm text-gray-400">
             <li><a href="/about" className="hover:text-white transition">About Us</a></li>
@@ -29,9 +29,9 @@ const Footer = () => {
         </div>
 
         {/* Follow Us Section */}
-        <div className="md:col-span-1 text-center md:text-left">
+        <div className="md:col-span-2 lg:col-span-1 text-center lg:text-left">
           <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
-          <div className="flex justify-center md:justify-start space-x-4">
+          <div className="flex justify-center lg:justify-start space-x-4">
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-500 transition">
               <FaFacebookF className="text-2xl" />
             </a>

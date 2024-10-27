@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import config from "../configs/config";
+import config from "../../configs/config";
 import { Helmet } from 'react-helmet-async';
 
 const Login = () => {
