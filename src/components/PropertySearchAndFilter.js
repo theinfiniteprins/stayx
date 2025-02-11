@@ -165,7 +165,7 @@ const PropertySearchAndFilter = () => {
               htmlFor="bedrooms"
               className="block mb-2 text-gray-800 font-bold text-sm"
             >
-              Bedrooms:
+              Bedrooms
             </label>
             <input
               type="number"
