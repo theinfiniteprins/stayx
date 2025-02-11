@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet-async';
 
 const Home = () => {
   const handleAdClick = () => {
+    console.log("Ad clicked");
     window.location.href = "https://www.effectiveratecpm.com/vjxkp0huc?key=f2410c4d49edd3da615dad6e32eeb2fd";
   };
 
@@ -20,11 +21,11 @@ const Home = () => {
       {/* Property Slider Section */}
       <PropertySlider />
 
-      {/* Advertisement Button Section */}
-      <div className="ad-button-container" style={{ textAlign: "center", margin: "20px 0" }}>
+      {/* Special Offer Section - renamed from Advertisement */}
+      <div className="special-offer-container" style={{ textAlign: "center", margin: "20px 0" }}>
         <button 
           onClick={handleAdClick} 
-          className="ad-button"
+          className="special-offer-button"  /* renamed from ad-button */
           style={{
             padding: "10px 20px",
             backgroundColor: "#ff4081",
@@ -36,7 +37,7 @@ const Home = () => {
             fontWeight: "bold"
           }}
         >
-          🔥 Check Out This Offer!
+          ✨ Special Offer! {/* changed from 🔥 Check Out This Offer! */}
         </button>
       </div>
 
