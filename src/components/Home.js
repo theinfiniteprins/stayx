@@ -4,14 +4,10 @@ import MostLiked from "./MostLiked";
 import PropertySearchAndFilter from "./PropertySearchAndFilter";  
 import "../styles.css";
 import { Helmet } from 'react-helmet-async';
-import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const navigate = useNavigate();
   const handleAdClick = () => {
     window.location.href = "https://www.effectiveratecpm.com/vjxkp0huc?key=f2410c4d49edd3da615dad6e32eeb2fd";
-    // OR if you want to open in new tab:
-    // window.open("https://www.effectiveratecpm.com/vjxkp0huc?key=f2410c4d49edd3da615dad6e32eeb2fd", "_blank");
   };
 
   return (
