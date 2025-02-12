@@ -1,21 +1,51 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 
 const TermsAndConditions = () => {
+  useEffect(() => {
+    const loadAd = () => {
+      console.log("Attempting to load ad...");
+
+      const adContainer = document.getElementById("ad-container");
+      if (!adContainer) {
+        console.warn("Ad container not found.");
+        return;
+      }
+
+      adContainer.innerHTML = ""; // Clear previous ad
+
+      // Create the ad script
+      const scriptAd = document.createElement("script");
+      scriptAd.type = "text/javascript";
+      scriptAd.src = "//pl25851020.effectiveratecpm.com/df/36/43/df364305e53c503541681ef52398ec9e.js";
+      scriptAd.async = true;
+      scriptAd.onload = () => console.log("Ad script loaded successfully.");
+
+      // Append script to ad container
+      adContainer.appendChild(scriptAd);
+    };
+
+    setTimeout(loadAd, 1000); // Delay to ensure the container exists
+  }, []);
+
   return (
     <div className="container mx-auto px-6 py-12 bg-gray-50">
       <Helmet>
-        <title>StayX | Terms & Conditions</title> {/* Custom title */}
+        <title>StayX | Terms & Conditions</title>
         <meta
           name="description"
           content="Find your dream rental home on StayX. Explore verified listings, compare properties, and make your move easy."
         />
       </Helmet>
+
       <div className="bg-white p-8 shadow-2xl rounded-lg max-w-4xl mx-auto">
         <h1 className="text-4xl font-extrabold mb-6 text-gray-900 border-b pb-4">
           Terms and Conditions
         </h1>
         <p className="text-xs text-gray-500 mb-8">Last updated: 13/10/2024</p>
+
+        {/* Advertisement Section */}
+        <div id="ad-container" style={{ textAlign: "center", margin: "20px 0" }}></div>
 
         <section className="mb-10">
           <p className="text-lg leading-relaxed text-gray-700">
@@ -84,7 +114,7 @@ const TermsAndConditions = () => {
   );
 };
 
-// Accordion component
+// Accordion Component
 const Accordion = ({ title, children }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
