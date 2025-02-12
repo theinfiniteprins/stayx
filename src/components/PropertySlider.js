@@ -61,6 +61,7 @@ const PropertySlider = () => {
     window.location.href = "https://www.effectiveratecpm.com/vjxkp0huc?key=f2410c4d49edd3da615dad6e32eeb2fd";
   };
 
+  
   return (
     <div className="slider-container w-screen relative mx-auto">
       {loading ? (
